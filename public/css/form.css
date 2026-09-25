@@ -1,0 +1,242 @@
+  #maincontent {
+    padding: 20px 30px;
+    font-family: Arial, sans-serif;
+}
+
+/* header layout */
+.mainheader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+/* title */
+.dashboard-title h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #222;
+}
+
+/* right side container */
+.section-title {
+    display: flex;
+    align-items: center;
+}
+
+/* date + time wrapper */
+.clock-group {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+/* each clock box */
+.clock {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    font-family: monospace;
+    font-size: 1rem;
+    font-weight: 600;
+
+    background: rgba(0,0,0,0.04);
+    padding: 8px 14px;
+    border-radius: 10px;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: all 0.25s ease;
+}
+
+/* hover effect */
+.clock:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+}
+
+/* number alignment */
+.clock span {
+    min-width: 20px;
+    text-align: center;
+}
+
+/* optional separators styling */
+.clock span:nth-child(2),
+.clock span:nth-child(4) {
+    opacity: 0.6;
+}
+
+#internal{
+
+    cursor: default;
+}
+
+
+/* Compact MTS Form */
+
+.container-fluid {
+    font-size: 14px;
+}
+
+h1 {
+    font-size: 28px;
+    margin-bottom: 10px !important;
+}
+
+/* Reduce card spacing */
+.card-body {
+    padding: 15px;
+}
+
+/* Reduce row gaps */
+.row.g-3 {
+     --bs-gutter-x: 10px;
+}
+
+
+
+.col-md-8,
+.col-md-4 {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+
+/* Make tables use available width */
+.col-md-8 table,
+.col-md-4 table {
+    width: 100%;
+}
+
+/* Remove excessive breaks */
+br {
+    line-height: 0;
+}
+
+/* All tables compact */
+table {
+    border-collapse: collapse;
+}
+
+table td,
+table th {
+    padding: 3px 5px !important;
+    vertical-align: middle;
+}
+
+/* Input size */
+.form-control,
+select {
+    height: 30px !important;
+    padding: 2px 6px !important;
+    font-size: 13px !important;
+}
+
+/* Buttons */
+.btn {
+    padding: 4px 10px;
+    font-size: 13px;
+}
+
+/* Internal button */
+#internal {
+    font-size: 16px !important;
+    padding: 5px 15px;
+}
+
+/* Date area */
+#day,
+#month,
+#year {
+    font-size: 14px;
+}
+
+/* Approval table width */
+table input {
+    min-width: 100px;
+}
+
+/* Item table */
+#ItemTable th {
+    padding: 4px !important;
+    font-size: 12px;
+}
+
+#ItemTable td {
+    padding: 2px !important;
+}
+
+#ItemTable .form-control {
+    height: 28px !important;
+}
+
+/* Make right section tighter */
+.col-md-4 table {
+    margin-bottom: 5px;
+}
+
+.col-md-4 td {
+    padding: 2px 4px !important;
+}
+
+/* Reduce horizontal spacing */
+hr {
+    margin: 10px 0;
+}
+
+/* Compact add/delete buttons */
+#ItemTable .btn {
+    padding: 3px 8px;
+}
+
+.highlight-row .form-control {
+
+     background-color: rgba(0, 255, 157, 0.568) !important;
+     color: rgb(0, 0, 0) !important;
+}
+
+
+.highlight-rej .form-control {
+
+
+     background-color: rgba(255, 0, 0, 0.897) !important;
+     color: rgb(0, 0, 0) !important;
+}
+
+
+
+.highlight-nodate {
+    animation: glow 1.5s ease-in-out;
+}
+
+.highlight-nodate td {
+    animation: glow 1.5s ease-in-out;
+}
+
+@keyframes glow {
+    0% {
+        background-color: inherit;
+    }
+
+    50% {
+        background-color: rgba(255, 0, 0, 0.795);
+       
+    }
+
+    100% {
+        background-color: inherit;
+    }
+}
+
+
+#spoilagejoc:-webkit-autofill,
+#spoilagejoc:-webkit-autofill:hover,
+#spoilagejoc:-webkit-autofill:focus {
+    -webkit-text-fill-color: black !important;
+    -webkit-box-shadow: 0 0 0px 1000px #d4edda inset !important;
+    box-shadow: 0 0 0px 1000px #d4edda inset !important;
+}

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>E-MTS HUB</title>
+
+
+    <style>
+
+    #maincontent{
+  
+    display:flex;
+    flex-direction:column;
+}
+
+.mainheader{
+    text-align:center;
+    padding:30px 0;
+}
+
+.hub-content{
+    flex:1;  
+    padding-top: 150px;               /* Take remaining height */
+}
+
+.card-box{
+
+    gap: 390px;
+}
+.hub-card {
+    width: 28rem;
+    height: 28rem; 
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+/* images fill the card properly */
+.hub-card img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+        transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* hover swap */
+
+
+
+.img1 {
+    opacity: 1;
+}
+
+.img2 {
+    opacity: 0;
+}
+
+.hub-card:hover .img1 {
+    opacity: 0;
+    transform: scale(1.02);
+}
+
+.hub-card:hover .img2 {
+       opacity: 1;
+    transform: scale(1);
+}
+
+
+
+.hub-item {
+    text-align: center;
+     transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+    cursor: pointer;
+}
+
+.hub-item:hover{
+    transform: scale(1.03);
+}
+
+.hub-title {
+    margin-top: 12px;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+
+    </style>
+</head>
+<body>
+
+
+<div class="container-fluid" id="maincontent">
+
+    <div class="mainheader">
+        <div class="section-title">
+            <div class="display-1 text-center">E-MTS HUB</div>
+        </div>
+    </div>
+
+<div class="hub-content d-flex justify-content-center align-items-center">
+
+    <div class="d-flex gap-6 flex-wrap justify-content-center card-box">
+
+            <div class="hub-item" onclick="goToMTS()">
+
+                <div class="card hub-card" >
+                    <img src="/img/icon1.png" class="card-img-top img1" alt="">
+                    <img src="/img/icon2.png" class="card-img-top img2" alt="">
+                </div>
+
+                <div class="hub-title">E-MTS</div>
+
+            </div>
+
+        <div class="hub-item" onclick="gotologin()">
+                  <div class="card hub-card" >
+                    <img src="/img/icon1.png" class="card-img-top img1" alt="">
+                    <img src="/img/icon2.png" class="card-img-top img2" alt="">
+                </div>
+
+                <div class="hub-title">E-MTS BOARD</div>
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+<script>
+
+function gotologin(){
+
+window.location.href ="/E-mts/login-board";
+}
+
+function goToMTS(){
+console.log("Clicked");
+window.location.href ="http://43.74.21.96/emts/";
+}
+
+
+</script>
+        
+</body>
+</html>

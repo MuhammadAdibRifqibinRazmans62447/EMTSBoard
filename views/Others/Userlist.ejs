@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<link rel="stylesheet" href="/css/list.css">
+<link rel="stylesheet" href="/css/header.css">
+<link 
+rel="stylesheet" 
+href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+    <title>List E-MTS</title>
+</head>
+<body>
+
+
+<%- include('../partials/header') %>
+
+
+
+
+<div class="pr-stat-cards">
+    <div class="pr-stat" data-status="ALL"  style="cursor:pointer">
+        <p class="pr-stat__label">Total Request</p>
+        <p class="pr-stat__value"><%= total %></p>
+    </div>
+
+    <div class="pr-stat" data-status="PENDING"style="cursor:pointer">
+        <p class="pr-stat__label">Pending Supervisor</p>
+        <p class="pr-stat__value pr-stat__value--orange">
+           <%= I1 %>
+        </p>
+    </div>
+
+    <div class="pr-stat" data-status="date"  style="cursor:pointer">
+        <p class="pr-stat__label">Pending Planning (Receive Date)</p>
+        <p class="pr-stat__value pr-stat__value--date">
+           <%= PL1 %>
+        </p>
+    </div>
+
+    <div class="pr-stat" data-status="Imaps"  style="cursor:pointer">
+        <p class="pr-stat__label">Pending Planning (IMaps)</p>
+        <p class="pr-stat__value pr-stat__value--red">
+           <%= PL2 %>
+        </p>
+    </div>
+
+    <div class="pr-stat" data-status="REJECTED"  style="cursor:pointer">
+        <p class="pr-stat__label">Pending Recive</p>
+        <p class="pr-stat__value pr-stat__value--red">
+           <%= W1 %>
+        </p>
+    </div>
+
+</div>
+
+
+<div class="approval-card d-none" id="prog">
+  <!-- <div class="approval-card" > -->
+
+    <div class="stepper-wrapper">
+
+        <!-- Step 1 -->
+      <div class="stepper-item" id="requestor">
+          <div class="step-counter">1</div>
+          <div class="step-title">Applicant</div>
+           <div class="step-name">Waiting...</div>
+          <div class="step-id"></div>
+          <div class="step-date"></div>
+      </div>
+
+        <!-- Step 2 -->
+        <div class="stepper-item " id="I1">
+            <div class="step-counter">
+                2
+            </div>
+
+            <div class="step-title">Approval by Supervisor/HOD</div>
+            <div class="step-name">Waiting...</div>
+            <div class="step-id">-</div>
+            <div class="step-date"></div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="stepper-item "  id="PL1">
+            <div class="step-counter">
+                3
+            </div>
+
+            <div class="step-title">Approval by Planning</div>
+            <div class="step-name">Waiting...</div>
+             <div class="step-id">-</div>
+            <div class="step-date">-</div>
+        </div>
+
+        <div class="stepper-item "id="PL2">
+            <div class="step-counter">
+                4
+            </div>
+
+            <div class="step-title">iMaps Uploaded</div>
+            <div class="step-name">Waiting...</div>
+             <div class="step-id">-</div>
+            <div class="step-date">-</div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="stepper-item" id="W1">
+            <div class="step-counter">
+                5
+            </div>
+
+            <div class="step-title">Board Received</div>
+            <div class="step-name">Waiting...</div>
+             <div class="step-id">-</div>
+            <div class="step-date">-</div>
+        </div>
+
+    </div>
+
+   
+
+</div>
+
+
+
+  <div class="container-fluid my-4">
+              <div class="d-flex justify-content-end align-items-center gap-2 sp">
+                <input
+                    type="text"
+                    id="searchInput"
+                    class="form-control"
+                    placeholder="Search Request..."
+                    style="width: 250px;">
+              </div>
+
+  <div class="card request-card shadow border-0 rounded-4">
+
+    <div class="card-header bg-primary text-white text-center fw-bold rounded-top-4">
+      📋 Request Status
+    </div>
+
+    <div class="card-body p-0">
+
+      <div class="table-container">
+
+        <table id="myTable" class="table table-hover align-middle text-center mb-0">
+
+          <thead>
+            <tr>
+              <th>Reference No.</th>
+              <th>Issue Date</th>
+              <th>Requestor</th>
+              <th>ID</th>
+              <th>Department</th>
+              <th>EXT</th>
+              <th>Issue JOC</th>
+              <th>Return JOC</th>
+              <th>Spoilage JOC</th>
+              <th>Collection Date</th>
+              <th>Details</th>
+              <th>Status</th>
+              <th>Action</th>
+             
+            </tr>
+          </thead>
+
+
+          <tbody>
+
+          <% if (Requests.length > 0) { %>
+
+            <% Requests.forEach((Request) => { %>
+
+              
+              <tr>
+                <!-- <% if (Request.approve_dep === user.dept && Request.stage === 'I1' ) { %>
+
+                <td class="fw-semibold">
+                <a href="/E-mts/board/approvalform/<%= Request.MNumber %>"
+                    class="text-decoration-none">
+                    <%= Request.MNumber %>
+                </a>
+                </td>
+
+                <% } else { %>
+
+                <td class="fw-semibold">
+                <%= Request.MNumber %>
+                </td>
+
+                <% } %> -->
+                <td class="fw-semibold clickable-text" onclick="progress('<%= Request.MNumber %>',this)">
+                <%= Request.MNumber %>
+                </td>
+
+                 <td>
+                <%= Request.issuedate ? new Date(Request.issuedate).toLocaleDateString('en-GB') : '' %>
+                </td>
+
+
+                <td>
+                  <%= Request.req_name %>
+                </td>
+
+                <td>
+                  <span class="text-muted">
+                    <%= Request.req_id %>
+                  </span>
+                </td>
+
+                <td>
+                  <span class="badge bg-light text-dark">
+                    <%= Request.approve_dep%>
+                  </span>
+                </td>
+
+                <td>
+                  <%= Request.req_ext %>
+                </td>
+
+                <td>
+                  <%= Request.issuejoc %>
+                </td>
+
+                <td>
+                  <%= Request.returnjoc %>
+                </td>
+
+                <td>
+                  <%= Request.spoilagejoc %>
+                </td>
+
+
+
+                <td>
+                  <%= Request.receiveDate ? new Date(Request.receiveDate).toLocaleDateString('en-GB') : '' %>
+                </td>
+
+
+                <td>
+                  <button class="btn btn-sm btn-outline-primary" onclick="itemModal('<%= Request.MNumber %>')">
+                    View
+                  </button>
+                </td>
+
+
+                <td>
+
+                <% 
+                    let stageText = '';
+                    let badgeClass = '';
+
+                    switch(Request.stage) {
+
+                    case 'I1':
+                        stageText = 'Waiting for Supervisor Approval';
+                        badgeClass = 'bg-primary';
+                        break;
+
+                    case 'PL1':
+                        stageText = ' Checking Receive Date';
+                        badgeClass = 'bg-warning text-dark';
+                        break;
+                    
+                    case 'I2':
+                        stageText = 'Resubmit the request';
+                        badgeClass = 'bg-warning text-dark';
+                        break;    
+
+                    case 'PL2':
+                        stageText = 'Planning Confirmation';
+                        badgeClass = 'bg-info text-dark';
+                        break;
+
+                    case 'PL3':
+                        stageText = 'Choose new recive date';
+                        badgeClass = 'bg-danger text-dark';
+                        break;
+
+                    case 'W1':
+                        stageText = 'Waiting to receive board';
+                        badgeClass = 'bg-secondary';
+                        break;
+
+                    default:
+                        stageText = Request.stage;
+                        badgeClass = 'bg-light text-dark';
+                    }
+                %>
+
+
+                <span class="badge <%= badgeClass %>">
+                    <%= stageText %>
+                </span>
+
+                </td>
+                
+                <td>
+                    <% if (
+                            String(Request.stage).trim() === 'I2' &&
+                            String(user.id).trim() === String(Request.req_id).trim()
+                        ) { %>
+
+                            <div class="vista-button"
+                                onclick="window.location.href='/E-mts/board/resubmitform/<%= Request.MNumber %>'">
+                                <div>Resubmit Request</div>
+                            </div>
+
+                        <% } else { %>
+
+                            <span style="color: #999;">—</span>
+
+                        <% } %>
+                </td>
+
+
+              </tr>
+
+            <% }) %>
+
+
+          <% } else { %>
+
+            <tr>
+              <td colspan="12" class="text-muted py-4">
+                No active requests
+              </td>
+            </tr>
+
+          <% } %>
+
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- details modal -->
+
+<div class="modal fade"
+     id="exampleModal"
+     data-bs-backdrop="static"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+
+        <div class="modal-content"
+             style="
+                border: none;
+                border-radius: 14px;
+                overflow: hidden;
+                box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+             ">
+
+            <!-- HEADER -->
+            <div class="modal-header"
+                 style="
+                    background: linear-gradient(135deg, #1f4e79, #2f75b5);
+                    color: white;
+                    border: none;
+                    padding: 18px 22px;
+                 ">
+
+                <div>
+                    <h1 class="modal-title"
+                        id="exampleModalLabel"
+                        style="
+                            font-size: 20px;
+                            font-weight: 600;
+                            margin: 0;
+                        ">
+                        Item List
+                    </h1>
+
+                    <small style="
+                        opacity: 0.85;
+                        font-size: 13px;
+                    ">
+                        Requested items
+                    </small>
+                </div>
+
+                <button type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
+
+            </div>
+
+
+            <!-- BODY -->
+            <div class="modal-body"
+                 style="
+                    padding: 20px;
+                    background: #f7f9fc;
+                 ">
+
+                <div class="table-container inmodal"
+                     style="
+                        background: white;
+                        border-radius: 10px;
+                        border: 1px solid #e3e7ed;
+                        overflow-x: auto;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                     ">
+
+                    <table style="
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin: 0;
+                        min-width: 750px;
+                    ">
+
+                                              <thead>
+                            <tr style="
+                                background: #eef3f8;
+                                border-bottom: 2px solid #d8e0e8;
+                            ">
+
+                                <th style="
+                                    padding: 12px 14px;
+                                    text-align: center;
+                                    font-size: 12px;
+                                    font-weight: 600;
+                                    color: #52606d;
+                                    white-space: nowrap;
+                                ">
+                                    No
+                                </th>
+
+                                <th style="
+                                    padding: 12px 14px;
+                                    text-align: left;
+                                    font-size: 12px;
+                                    font-weight: 600;
+                                    color: #52606d;
+                                    white-space: nowrap;
+                                ">
+                                    Reference No.
+                                </th>
+
+                                <th style="
+                                    padding: 12px 14px;
+                                    text-align: left;
+                                    font-size: 12px;
+                                    font-weight: 600;
+                                    color: #52606d;
+                                    white-space: nowrap;
+                                ">
+                                    Item No
+                                </th>
+
+                                <th style="
+                                    padding: 12px 14px;
+                                    text-align: left;
+                                    font-size: 12px;
+                                    font-weight: 600;
+                                    color: #52606d;
+                                    white-space: nowrap;
+                                ">
+                                    Item Description
+                                </th>
+
+                                <th style="
+                                    padding: 12px 14px;
+                                    text-align: left;
+                                    font-size: 12px;
+                                    font-weight: 600;
+                                    color: #52606d;
+                                    white-space: nowrap;
+                                ">
+                                    Item Category
+                                </th>
+
+                                <th style="
+                                    padding: 12px 14px;
+                                    text-align: right;
+                                    font-size: 12px;
+                                    font-weight: 600;
+                                    color: #52606d;
+                                    white-space: nowrap;
+                                ">
+                                    Quantity
+                                </th>
+
+                                <th style="
+                                    padding: 12px 14px;
+                                    text-align: left;
+                                    font-size: 12px;
+                                    font-weight: 600;
+                                    color: #52606d;
+                                    white-space: nowrap;
+                                ">
+                                    Remark
+                                </th>
+                                                                <th style="
+                                    padding: 12px 14px;
+                                    text-align: left;
+                                    font-size: 12px;
+                                    font-weight: 600;
+                                    color: #52606d;
+                                    white-space: nowrap;
+                                ">
+                                    Status
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody class="tbodymodal"
+                               style="
+                                  font-size: 13px;
+                                  color: #343a40;
+                               ">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <!-- FOOTER -->
+            <div class="modal-footer"
+                 style="
+                    background: white;
+                    border-top: 1px solid #e5e7eb;
+                    padding: 14px 20px;
+                 ">
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                        style="
+                            border-radius: 7px;
+                            padding: 7px 20px;
+                            font-size: 13px;
+                        ">
+                    Close
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.bootstrap5.js"></script>
+
+<script>
+const hrsEl = document.getElementById("hrs");
+const minEl = document.getElementById("min");
+const secEl = document.getElementById("sec");
+
+const dayEl = document.getElementById("day");
+const monthEl = document.getElementById("month");
+const yearEl = document.getElementById("year");
+
+
+
+
+
+const pad = (n) => String(n).padStart(2, "0");
+
+// set date once (static)
+const today = new Date();
+dayEl.textContent = pad(today.getDate());
+monthEl.textContent = pad(today.getMonth() + 1);
+yearEl.textContent = today.getFullYear();
+
+
+async function itemModal(Mnumber) {
+
+    try{
+
+      const response = await fetch(`/E-mts/board/fetchItems/${Mnumber}`);
+        if (!response.ok) {
+            throw new Error("Server error");
+        }
+         const data = await response.json();
+
+         let tbody = document.querySelector(".inmodal .tbodymodal");
+
+         tbody.innerHTML = '';
+
+        if (data.length > 0) {
+            data.forEach((e, index) => {
+
+              let no = index +1;
+
+              tbody.innerHTML += `
+                  <tr style="border-bottom: 1px solid #edf0f3;">
+                      <td style="padding: 11px 14px; text-align:center;">${no}</td>
+                      <td style="padding: 11px 14px;">${e.MNumber}</td>
+                      <td style="padding: 11px 14px;">${e.itemno}</td>
+                      <td style="padding: 11px 14px;">${e.itemdesc}</td>
+                      <td style="padding: 11px 14px;">${e.itemcat}</td>
+                      <td style="padding: 11px 14px; text-align:center;">${e.reqqty}</td>
+                      <td style="padding: 11px 14px; text-align:center;">${e.remark || '-'}</td>
+                      <td style="padding: 11px 14px; text-align:center; color:${getStatusColor(e.status)};">${e.status}</td>
+                  </tr>
+              `;
+            });
+
+                const modal = new bootstrap.Modal(document.getElementById('exampleModal'));
+                modal.show();
+                
+        } else {
+
+                      tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center">
+                        No Data
+                    </td>
+                </tr>
+            `;
+
+        }
+
+      
+
+
+
+    }catch(error){
+
+          console.error("Error fetching items:", error);
+
+    }
+
+  
+}
+
+function getStatusColor(status) {
+    switch (status) {
+        case 'approve':
+            return 'green';
+        case 'reject':
+            return 'red';
+        case 'Pending':
+            return 'orange';
+        default:
+            return 'gray';
+    }
+  }
+
+
+function updateClock() {
+    const now = new Date();
+
+    hrsEl.textContent = pad(now.getHours());
+    minEl.textContent = pad(now.getMinutes());
+    secEl.textContent = pad(now.getSeconds());
+}
+
+let lastrow =null;
+async function progress(Mnumber, col) {
+
+    const row = col.closest('tr');
+    const progressbar = document.getElementById('prog');
+
+    // Clicking the same row
+    if (lastrow === row) {
+        row.classList.remove('table-info');
+        progressbar.classList.add('d-none');
+        lastrow = null;
+        return;
+    }
+
+    // Remove highlight from previous row
+    if (lastrow) {
+        lastrow.classList.remove('table-info');
+    }
+
+    let refresh = 1;
+     document.querySelectorAll('.stepper-item').forEach(stage => {
+        stage.classList.remove('completed', 'active','rejected','warning');
+
+        const counter = stage.querySelector('.step-counter');
+        const name = stage.querySelector('.step-name');
+        const date = stage.querySelector('.step-date');
+        const id = stage.querySelector('.step-id');
+
+        if (counter) counter.textContent = refresh;
+        if (name) name.textContent = '';
+        if (id) id.textContent = '';
+        if (date) date.textContent = '-';
+        refresh++;
+    });
+    // Highlight current row
+    row.classList.add('table-info');
+
+    // Remember current row
+    lastrow = row;
+
+    // Show progress bar
+    progressbar.classList.remove('d-none');
+
+    console.log(Mnumber);
+
+
+    try {
+    const response = await fetch(`/E-mts/board/fetchStage/${Mnumber}`)
+
+    const data = await response.json();
+    if (!response.ok) {
+            throw new Error("Server error");
+     }
+
+
+     
+
+if(data.currentStage.stage !='I2'){
+    
+    data.pastapproval.forEach(row=>{
+
+          const stage = document.getElementById(row.stage);
+
+          if (!stage) return;
+
+          stage.classList.add("completed");
+
+          stage.querySelector('.step-counter').textContent = '✓';
+          stage.querySelector('.step-id').textContent = row.employee_id;
+           stage.querySelector('.step-name').textContent = row.approval_name;
+          stage.querySelector('.step-date').textContent = new Date(row.action_date).toLocaleDateString('en-GB');
+         
+
+
+    })
+
+   
+    if(data.currentStage.stage !='PL3'){
+
+    const stagecurrent = document.getElementById(data.currentStage.stage);
+    stagecurrent.querySelector('.step-name').textContent ="Waiting..."
+    stagecurrent.classList.add("active")
+
+    }else{
+
+    const stagecurrent = document.getElementById("I1");
+    stagecurrent.querySelector('.step-name').textContent ="Date Rejected"
+     stagecurrent.querySelector('.step-id').textContent ="--"
+     stagecurrent.querySelector('.step-counter').textContent = 'X';
+    stagecurrent.classList.add("rejected")
+    stagecurrent.querySelector('.step-date').textContent =  new Date(data.currentStage.created_at).toLocaleDateString('en-GB');
+
+
+    }
+
+}
+
+const requestor = document.getElementById("requestor");
+
+// Remove previous status classes
+requestor.classList.remove("completed", "warning");
+
+// Set status icon and class
+if (data.currentStage.stage !== 'I2') {
+    requestor.querySelector('.step-counter').textContent = '✓';
+    requestor.classList.add("completed");
+} else {
+    requestor.querySelector('.step-counter').textContent = '⚠️';
+    requestor.classList.add("warning");
+}
+
+// Set requestor information
+requestor.querySelector('.step-id').textContent = data.requestor.req_id;
+requestor.querySelector('.step-name').textContent = data.requestor.req_name;
+requestor.querySelector('.step-date').textContent =
+    new Date(data.requestor.issuedate).toLocaleDateString('en-GB');
+
+    }catch (error) {
+
+        console.error(error);
+
+    }
+   
+
+}
+
+
+
+// initial render
+updateClock();
+
+// sync clock (better than drifting intervals)
+setInterval(updateClock, 1000);
+
+
+
+    const searchInput = document.getElementById("searchInput");
+const table = document.getElementById("myTable");
+const rows = table.querySelectorAll("tbody tr");
+
+searchInput.addEventListener("keyup", function () {
+    const keyword = this.value.toLowerCase();
+
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+
+        row.style.display = text.includes(keyword) ? "" : "none";
+    });
+});
+
+
+
+
+</script>
+
+    
+</body>
+</html>

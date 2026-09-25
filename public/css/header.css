@@ -1,0 +1,546 @@
+#maincontent {
+
+    padding: 20px 30px;
+
+    font-family: Arial, sans-serif;
+
+}
+
+
+
+/* ================================
+   HEADER
+================================ */
+
+.mainheader {
+
+    display:flex;
+
+    position: relative;
+
+    align-items:center;
+
+
+    padding:20px 30px;
+
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(255,255,255,0.95),
+        rgba(240,247,255,0.95)
+    );
+
+
+    border-radius:18px;
+
+
+    border:1px solid rgba(0,0,0,0.05);
+
+
+    box-shadow:
+    0 10px 25px rgba(0,0,0,0.08);
+
+
+    backdrop-filter:blur(10px);
+
+}
+
+
+
+/* ================================
+   TITLE
+================================ */
+
+.dashboard-title h1 {
+
+    margin:0;
+
+
+    font-size:1.9rem;
+
+
+    font-weight:800;
+
+
+    letter-spacing:1px;
+
+
+    color:#1e3a8a;
+
+    cursor: pointer;
+
+}
+.dashboard-title {
+
+    margin-right:auto;
+
+}
+
+
+/* ================================
+   CENTER USER SECTION
+================================ */
+
+
+.section-title {
+
+    position:absolute;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+
+
+.user-profile {
+
+
+    cursor: pointer;
+    padding:12px 30px;
+
+
+    border-radius:15px;
+
+
+    background:white;
+
+
+    box-shadow:
+    0 5px 15px rgba(0,0,0,0.08);
+
+
+    border:1px solid rgba(0,0,0,0.05);
+
+}
+
+
+
+.user-info {
+
+
+    text-align:center;
+
+}
+
+
+
+/* Welcome */
+
+.welcome-text {
+
+
+    font-size:20px;
+
+
+    font-weight:700;
+
+
+    color:#111827;
+
+}
+
+
+
+.welcome-text::before {
+
+
+    content:"👤 ";
+
+}
+
+
+
+/* Department + Role */
+
+
+.user-detail {
+
+
+    margin-top:8px;
+
+
+    display:flex;
+
+
+    justify-content:center;
+
+
+    gap:20px;
+
+
+    font-size:14px;
+
+
+    color:#64748b;
+
+}
+
+
+
+.user-detail span {
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    gap:5px;
+
+}
+
+
+.user-detail i {
+
+
+    color:#2563eb;
+
+}
+
+
+
+/* ================================
+   RIGHT PANEL
+================================ */
+
+
+.right-panel {
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+    align-items:flex-end;
+
+
+    gap:10px;
+
+}
+
+
+
+/* ================================
+   CLOCK
+================================ */
+
+
+.clock-group {
+
+
+    display:flex;
+
+
+    gap:12px;
+
+}
+
+
+
+.clock {
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    gap:8px;
+
+
+    padding:10px 16px;
+
+
+    border-radius:12px;
+
+
+    background:
+    linear-gradient(
+        135deg,
+        #eff6ff,
+        #ffffff
+    );
+
+
+    border:1px solid #dbeafe;
+
+
+    font-family:monospace;
+
+
+    font-size:1rem;
+
+
+    font-weight:700;
+
+
+    color:#1e40af;
+
+
+    box-shadow:
+
+    0 4px 10px rgba(37,99,235,0.15);
+
+
+    transition:.3s;
+
+}
+
+
+
+.clock:hover {
+
+
+    transform:translateY(-3px);
+
+
+    box-shadow:
+
+    0 8px 20px rgba(37,99,235,0.25);
+
+}
+
+
+
+.clock span {
+
+
+    min-width:20px;
+
+
+    text-align:center;
+
+}
+
+
+
+/* ================================
+   SYSTEM STATUS
+================================ */
+
+
+.system-status {
+
+
+    font-size:13px;
+
+
+    font-weight:bold;
+
+
+    color:#16a34a;
+
+
+}
+
+
+.system-status::before {
+
+
+    content:"●";
+
+
+    margin-right:6px;
+
+
+}
+
+
+
+/* ================================
+   LOGOUT
+================================ */
+
+
+.logout a {
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+    gap:8px;
+
+
+    padding:8px 22px;
+
+
+    border-radius:10px;
+
+
+    background:#f1f5f9;
+
+
+    color:#334155;
+
+
+    font-size:14px;
+
+
+    font-weight:600;
+
+
+    text-decoration:none;
+
+
+    transition:.3s;
+
+
+}
+
+
+
+.logout a:hover {
+
+
+    background:#dc2626;
+
+
+    color:white;
+
+
+    transform:translateY(-2px);
+
+
+    box-shadow:
+
+    0 5px 15px rgba(220,38,38,.25);
+
+
+}
+
+
+.upload a {
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+    gap:8px;
+
+
+    padding:8px 22px;
+
+
+    border-radius:10px;
+
+
+    background:#f1f5f9;
+
+
+    color:#334155;
+
+
+    font-size:14px;
+
+
+    font-weight:600;
+
+
+    text-decoration:none;
+
+
+    transition:.3s;
+
+
+}
+
+
+
+.upload a:hover {
+
+
+    background:#0ae902;
+
+
+    color:white;
+
+
+    transform:translateY(-2px);
+
+
+    box-shadow:
+
+    0 5px 15px rgba(220,38,38,.25);
+
+
+}
+
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+
+@media(max-width:900px){
+
+
+    .mainheader {
+
+
+        flex-direction:column;
+
+
+        gap:20px;
+
+    }
+
+
+
+    .section-title {
+
+
+        order:2;
+
+    }
+
+
+
+    .right-panel {
+
+          margin-left:auto;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:flex-end;
+
+    gap:10px;
+
+    }
+
+}
+
+.collectionbtn{
+
+    display: flex;
+    gap: 10px;
+
+
+
+}

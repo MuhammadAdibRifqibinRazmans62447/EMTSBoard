@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.bootstrap5.css">
+
+<link rel="stylesheet" href="/css/list.css">
+<link rel="stylesheet" href="/css/header.css">
+    <title>Request List</title>
+</head>
+<body>
+
+<%- include('../partials/headerPlanning') %>
+
+
+    <% if(success.length > 0){ %>
+    <div class="alert alert-success">
+        <%= success[0] %>
+    </div>
+<% } %>
+
+<% if (error.length > 0) { %>
+    <div class="alert alert-danger">
+        <%= error %>
+    </div>
+<% } %>
+
+
+
+<div class="pr-stat-cards">
+    <div class="pr-stat" data-status="ALL"  style="cursor:pointer">
+        <p class="pr-stat__label">Total Request</p>
+        <p class="pr-stat__value"><%= total %></p>
+    </div>
+
+    <div class="pr-stat" data-status="PENDING"style="cursor:pointer">
+        <p class="pr-stat__label">Pending Supervisor</p>
+        <p class="pr-stat__value pr-stat__value--orange">
+           <%= I1 %>
+        </p>
+    </div>
+
+    <div class="pr-stat" data-status="date"  style="cursor:pointer">
+        <p class="pr-stat__label">Pending Planning (Receive Date)</p>
+        <p class="pr-stat__value pr-stat__value--date">
+           <%= PL1 %>
+        </p>
+    </div>
+
+    <div class="pr-stat" data-status="Imaps"  style="cursor:pointer">
+        <p class="pr-stat__label">Pending Planning (IMaps)</p>
+        <p class="pr-stat__value pr-stat__value--red">
+           <%= PL2 %>
+        </p>
+    </div>
+
+    <div class="pr-stat" data-status="REJECTED"  style="cursor:pointer">
+        <p class="pr-stat__label">Pending Recive</p>
+        <p class="pr-stat__value pr-stat__value--red">
+           <%= W1 %>
+        </p>
+    </div>
+
+</div>
+
+<div class="approval-card d-none" id="prog">
+  <!-- <div class="approval-card" > -->
+
+    <div class="stepper-wrapper">
+
+        <!-- Step 1 -->
+      <div class="stepper-item" id="requestor">
+          <div class="step-counter">1</div>
+          <div class="step-title">Applicant</div>
+           <div class="step-name">Waiting...</div>
+          <div class="step-id"></div>
+          <div class="step-date"></div>
+      </div>
+
+        <!-- Step 2 -->
+        <div class="stepper-item " id="I1">
+            <div class="step-counter">
+                2
+            </div>
+
+            <div class="step-title">Approval by Supervisor/HOD</div>
+            <div class="step-name">Waiting...</div>
+            <div class="step-id">-</div>
+            <div class="step-date"></div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="stepper-item "  id="PL1">
+            <div class="step-counter">
+                3
+            </div>
+
+            <div class="step-title">Approval by Planning</div>
+            <div class="step-name">Waiting...</div>
+             <div class="step-id">-</div>
+            <div class="step-date">-</div>
+        </div>
+
+        <div class="stepper-item "id="PL2">
+            <div class="step-counter">
+                4
+            </div>
+
+            <div class="step-title">iMaps Uploaded</div>
+            <div class="step-name">Waiting...</div>
+             <div class="step-id">-</div>
+            <div class="step-date">-</div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="stepper-item" id="W1">
+            <div class="step-counter">
+                5
+            </div>
+
+            <div class="step-title">Board Received</div>
+            <div class="step-name">Waiting...</div>
+             <div class="step-id">-</div>
+            <div class="step-date">-</div>
+        </div>
+
+    </div>
+
+   
+
+</div>
+
+
+
+<div class="container-fluid my-4">
+              <div class="d-flex justify-content-end align-items-center gap-2 sp">
+                <input
+                    type="text"
+                    id="searchInput"
+                    class="form-control"
+                    placeholder="Search Request..."
+                    style="width: 250px;">
+              </div>
+
+  <div class="card request-card shadow border-0 rounded-4">
+
+<div class="card-header bg-primary text-white fw-bold rounded-top-4 d-flex justify-content-between align-items-center">
+    
+    <span>📋 Request Status</span>
+
+<button class="btn btn-light" onclick="download()">
+    Download
+</button>
+
+</div>
+
+    <div class="card-body p-0">
+
+      <div class="table-container">
+
+        <table id="myTable" class="table table-hover align-middle text-center mb-0">
+
+          <thead>
+            <tr>
+              <th>Reference No.</th>
+              <th>Issue Date</th>
+              <th>Requestor</th>
+              <th>ID</th>
+              <th>Department</th>
+              <th>EXT</th>
+              <th>Issue JOC</th>
+              <th>Return JOC</th>
+              <th>Spoilage JOC</th>
+              <th>Remarks</th>
+              <th>Collection Date</th>
+              <th>Details</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+
+          <tbody>
+
+          <% if (Requests.length > 0) { %>
+
+            <% Requests.forEach((Request) => { %>
+
+              
+              <tr>
+
+
+                <td class="fw-semibold clickable-text" onclick="progress('<%= Request.MNumber %>',this)">
+                <%= Request.MNumber %>
+                </td>
+
+                <td>
+                <%= Request.issuedate ? new Date(Request.issuedate).toLocaleDateString('en-GB') : '' %>
+                </td>
+
+                <td>
+                  <%= Request.req_name %>
+                </td>
+
+                <td>
+                  <span class="text-muted">
+                    <%= Request.req_id %>
+                  </span>
+                </td>
+
+                <td>
+                  <span class="badge bg-light text-dark">
+                    <%= Request.req_dep %>
+                  </span>
+                </td>
+
+                <td>
+                  <%= Request.req_ext %>
+                </td>
+
+                <td>
+                  <%= Request.issuejoc %>
+                </td>
+
+                <td>
+                  <%= Request.returnjoc %>
+                </td>
+
+                <td>
+                  <%= Request.spoilagejoc %>
+                </td>
+
+                <td>
+                  <%= Request.remark %>
+                </td>
+
+
+            
+                <% if (Request.stage === 'PL1') { %>
+                  <td>
+                      <div class="blink_me"
+                       
+                          style=" color: #ffc107; font-weight: 600;">
+                          
+                          <%= Request.receiveDate
+                              ? new Date(Request.receiveDate).toLocaleDateString('en-GB')
+                              : 'Add Date' %>
+
+                      </div>
+                  </td>
+
+                <% } else { %>
+
+                    <td class="fw-semibold">
+                        <%= Request.receiveDate
+                            ? new Date(Request.receiveDate).toLocaleDateString('en-GB')
+                            : 'Add Date' %>
+                    </td>
+
+                <% } %>
+<!-- make it pulsing -->
+
+                <td>
+                  <button class="btn btn-sm btn-outline-primary" onclick="itemModal('<%= Request.MNumber %>')">
+                    View
+                  </button>
+                </td>
+
+
+
+                <td>
+
+                              <%
+                  let stageText = '';
+                  let badgeClass = '';
+
+                  switch (Request.stage) {
+
+                      case 'PL1':
+                          stageText = 'Please confirm the receive Date';
+                          badgeClass = 'bg-warning text-dark';
+                          break;
+
+                      case 'PL2':
+                          stageText = 'Uploaded into Imaps';
+                          badgeClass = 'bg-info text-dark';
+                          break;
+
+                      case 'I2':
+                          stageText = 'Waiting for resubmission';
+                          badgeClass = 'bg-warning text-dark';
+                          break;
+
+                      case 'PL3':
+                          stageText = 'Waiting for new recieve date';
+                          badgeClass = 'bg-danger text-dark';
+                          break;
+
+                      case 'W1':
+                          stageText = 'Waiting for Board Production';
+                          badgeClass = 'bg-secondary';
+                          break;
+
+                      default:
+                          stageText = Request.stage;
+                          badgeClass = 'bg-light text-dark';
+                  }
+              %>
+
+              <span class="badge <%= badgeClass %>">
+                  <%= stageText %>
+              </span>
+
+                </td>
+              
+                <td>
+                    <% if (Request.stage === 'PL1') { %>
+                            <div class="vista-button approvebtn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#ApproveModal"
+                                data-date="<%= Request.receiveDate ? new Date(Request.receiveDate).toLocaleDateString('en-GB') : '' %>"
+                                data-m="<%= Request.MNumber %>">
+
+                                <div>Confirm Date</div>
+
+                            </div>
+
+                    <% } else if (Request.stage === 'PL2') { %>
+
+                        <div class="vista-button" onclick="uploaded('<%= Request.MNumber %>')">
+                            <div>Request Uploaded</div>
+                        </div>
+
+                    <% } else { %>
+
+                        <span style="color: #999;">—</span>
+
+                    <% } %>
+                </td>
+                
+
+
+              </tr>
+
+            <% }) %>
+
+
+          <% } else { %>
+
+            <tr>
+              <td colspan="12" class="text-muted py-4">
+                No active requests
+              </td>
+            </tr>
+
+          <% } %>
+
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- <button 
+    type="button" 
+    id="active_modal"
+    class="btn btn-primary d-none"
+    data-bs-toggle="modal" 
+    data-bs-target="#exampleModal">
+    Launch demo modal
+</button> -->
+
+<!-- details modal -->
+
+<div class="modal fade"
+     id="exampleModal"
+     data-bs-backdrop="static"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+
+        <div class="modal-content"
+             style="
+                border: none;
+                border-radius: 14px;
+                overflow: hidden;
+                box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+             ">
+
+            <!-- HEADER -->
+            <div class="modal-header"
+                 style="
+                    background: linear-gradient(135deg, #1f4e79, #2f75b5);
+                    color: white;
+                    border: none;
+                    padding: 18px 22px;
+                 ">
+
+                <div>
+                    <h1 class="modal-title"
+                        id="exampleModalLabel"
+                        style="
+                            font-size: 20px;
+                            font-weight: 600;
+                            margin: 0;
+                        ">
+                        Item List
+                    </h1>
+
+                    <small style="
+                        opacity: 0.85;
+                        font-size: 13px;
+                    ">
+                        Requested items
+                    </small>
+                </div>
+
+                <button type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
+
+            </div>
+
+
+            <!-- BODY -->
+            <div class="modal-body"
+                 style="
+                    padding: 20px;
+                    background: #f7f9fc;
+                 ">
+
+                <div class="table-container inmodal"
+                     style="
+                        background: white;
+                        border-radius: 10px;
+                        border: 1px solid #e3e7ed;
+                        overflow-x: auto;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                     ">
+
+                    <table style="
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin: 0;
+                        min-width: 750px;
+                    ">
+
+                        <thead>
+                            <tr style="
+                                background: #eef3f8;
+                                border-bottom: 2px solid #d8e0e8;
+                            ">
+
+                                <th style="
+                                    padding: 12px 14px;
+                                    text-align: center;
+                                    font-size: 12px;
+                                    font-weight: 600;
+                                    color: #52606d;
+                                    white-space: nowrap;
+                                ">
+                                    No
+                                </th>
+
+                                <th style="
+                                    padding: 12px 14px;
+                                    text-align: left;
+                                    font-size: 12px;
+                                    font-weight: 600;
+                                    color: #52606d;
+                                    white-space: nowrap;
+                                ">
+                                    Reference No.
+                                </th>
+
+                                <th style="
+                                    padding: 12px 14px;
+                                    text-align: left;
+                                    font-size: 12px;
+                                    font-weight: 600;
+                                    color: #52606d;
+                                    white-space: nowrap;
+                                ">
+                                    Item No
+                                </th>
+
+                                <th style="
+                                    padding: 12px 14px;
+                                    text-align: left;
+                                    font-size: 12px;
+                                    font-weight: 600;
+                                    color: #52606d;
+                                    white-space: nowrap;
+                                ">
+                                    Item Description
+                                </th>
+
+                                <th style="
+                                    padding: 12px 14px;
+                                    text-align: left;
+                                    font-size: 12px;
+                                    font-weight: 600;
+                                    color: #52606d;
+                                    white-space: nowrap;
+                                ">
+                                    Item Category
+                                </th>
+
+                                <th style="
+                                    padding: 12px 14px;
+                                    text-align: right;
+                                    font-size: 12px;
+                                    font-weight: 600;
+                                    color: #52606d;
+                                    white-space: nowrap;
+                                ">
+                                    Quantity
+                                </th>
+
+                                <th style="
+                                    padding: 12px 14px;
+                                    text-align: left;
+                                    font-size: 12px;
+                                    font-weight: 600;
+                                    color: #52606d;
+                                    white-space: nowrap;
+                                ">
+                                    Remark
+                                </th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody class="tbodymodal"
+                               style="
+                                  font-size: 13px;
+                                  color: #343a40;
+                               ">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <!-- FOOTER -->
+            <div class="modal-footer"
+                 style="
+                    background: white;
+                    border-top: 1px solid #e5e7eb;
+                    padding: 14px 20px;
+                 ">
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                        style="
+                            border-radius: 7px;
+                            padding: 7px 20px;
+                            font-size: 13px;
+                        ">
+                    Close
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- end details modal -->
+
+
+
+<div class="modal fade"
+     id="ApproveModal"
+     tabindex="-1"
+     data-bs-backdrop="static"
+     aria-labelledby="ApproveModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 90%;">
+        <div class="modal-content">
+
+            <!-- HEADER -->
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="ApproveModalLabel">
+                    Approve Date
+                </h1>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
+            </div>
+
+
+            <!-- BODY -->
+            <div class="modal-body">
+
+                <form id="approveDate"
+                      method="POST"
+                      action="/E-mts/planning/approveDate">
+
+                    <div class="row g-3">
+
+                        <!-- M NUMBER -->
+                        <div class="form-group col-sm-6">
+
+                            <label for="Mnumber" class="form-label">
+                               Reference No
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   name="Mnumber"
+                                   id="Mnumber"
+                                   readonly>
+
+                        </div>
+
+
+                        <!-- RECEIVE DATE -->
+                        <div class="form-group col-sm-6">
+
+                            <label for="receiveDate" class="form-label">
+                                Collection Date
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <input type="date"
+                                   class="form-control"
+                                   name="receiveDate"
+                                   id="receiveDate"
+                                   required>
+
+                        </div>
+
+
+                        <!-- APPROVE -->
+
+                        <div class="form-group col-sm-12 approveSection">
+
+                            <label class="form-label">
+                                Approve
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <div class="d-flex gap-4">
+
+                                <div class="form-check">
+
+                                    <input class="form-check-input"
+                                           type="radio"
+                                           name="approve"
+                                           id="approveYes"
+                                           value="yes"
+                                           onclick="toggledate(true)"
+                                           required>
+
+                                    <label class="form-check-label"
+                                           for="approveYes">
+                                        Yes
+                                    </label>
+
+                                </div>
+
+
+                                <div class="form-check">
+
+                                    <input class="form-check-input"
+                                           type="radio"
+                                           name="approve"
+                                           id="approveNo"
+                                           value="no"
+                                           onclick="toggledate(false)">
+
+                                    <label class="form-check-label"
+                                           for="approveNo">
+                                        No
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- RECOMMENDED DATE -->
+                         
+                        <div class="form-group col-sm-6 d-none"
+                             id="recommendedDateDiv">
+
+                            <label for="recommendedDate" class="form-label">
+                                Recommended Collection Date
+                                <span class="text-danger"></span>
+                            </label>
+
+                            <input type="date"
+                                   class="form-control"
+                                   name="recommendedDate"
+                                   id="recommendedDate">
+
+                        </div>
+
+
+                        <!-- REASON -->
+                        <div class="form-group col-sm-6 d-none"
+                             id="modalreason">
+
+                            <label for="reason" class="form-label">
+                                Reason
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   name="reason"
+                                   id="reason">
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+
+            <!-- FOOTER -->
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Close
+                </button>
+
+                <button type="submit"
+                        id="submitApprove"
+                        class="btn btn-primary"
+                        form="approveDate">
+                    Submit
+                </button>
+
+                <button type="button"
+                            id="CancleRequest"
+                            class="btn btn-danger"
+                            onclick="cancleRequest()" disabled>
+                        Reject
+                </button>
+
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.bootstrap5.js"></script>
+<script>
+
+let lastrow = null;
+
+
+async function progress(Mnumber, col) {
+
+    const row = col.closest('tr');
+    const progressbar = document.getElementById('prog');
+
+    // Clicking the same row
+    if (lastrow === row) {
+        row.classList.remove('table-info');
+        progressbar.classList.add('d-none');
+        lastrow = null;
+        return;
+    }
+
+    // Remove highlight from previous row
+    if (lastrow) {
+        lastrow.classList.remove('table-info');
+    }
+
+    let refresh = 1;
+     document.querySelectorAll('.stepper-item').forEach(stage => {
+        stage.classList.remove('completed', 'active','rejected','warning');
+
+        const counter = stage.querySelector('.step-counter');
+        const name = stage.querySelector('.step-name');
+        const date = stage.querySelector('.step-date');
+        const id = stage.querySelector('.step-id');
+
+        if (counter) counter.textContent = refresh;
+        if (name) name.textContent = '';
+        if (id) id.textContent = '';
+        if (date) date.textContent = '-';
+        refresh++;
+    });
+    // Highlight current row
+    row.classList.add('table-info');
+
+    // Remember current row
+    lastrow = row;
+
+    // Show progress bar
+    progressbar.classList.remove('d-none');
+
+    console.log(Mnumber);
+
+
+    try {
+    const response = await fetch(`/E-mts/board/fetchStage/${Mnumber}`)
+
+    const data = await response.json();
+    if (!response.ok) {
+            throw new Error("Server error");
+     }
+
+
+     
+
+if(data.currentStage.stage !='I2'){
+    
+    data.pastapproval.forEach(row=>{
+
+          const stage = document.getElementById(row.stage);
+
+          if (!stage) return;
+
+          stage.classList.add("completed");
+
+          stage.querySelector('.step-counter').textContent = '✓';
+          stage.querySelector('.step-id').textContent = row.employee_id;
+           stage.querySelector('.step-name').textContent = row.approval_name;
+          stage.querySelector('.step-date').textContent = new Date(row.action_date).toLocaleDateString('en-GB');
+         
+
+
+    })
+
+   
+    if(data.currentStage.stage !='PL3'){
+
+    const stagecurrent = document.getElementById(data.currentStage.stage);
+    stagecurrent.querySelector('.step-name').textContent ="Waiting..."
+    stagecurrent.classList.add("active")
+
+    }else{
+
+    const stagecurrent = document.getElementById("I1");
+    stagecurrent.querySelector('.step-name').textContent ="Date Rejected"
+     stagecurrent.querySelector('.step-id').textContent ="--"
+     stagecurrent.querySelector('.step-counter').textContent = 'X';
+    stagecurrent.classList.add("rejected")
+    stagecurrent.querySelector('.step-date').textContent =  new Date(data.currentStage.created_at).toLocaleDateString('en-GB');
+
+
+    }
+
+}
+
+
+    const requestor = document.getElementById("requestor");
+
+    // Remove previous status classes
+    requestor.classList.remove("completed", "warning");
+
+    // Set status icon and class
+    if (data.currentStage.stage !== 'I2') {
+        requestor.querySelector('.step-counter').textContent = '✓';
+        requestor.classList.add("completed");
+    } else {
+        requestor.querySelector('.step-counter').textContent = '⚠️';
+        requestor.classList.add("warning");
+    }
+
+    // Set requestor information
+    requestor.querySelector('.step-id').textContent = data.requestor.req_id;
+    requestor.querySelector('.step-name').textContent = data.requestor.req_name;
+    requestor.querySelector('.step-date').textContent =
+        new Date(data.requestor.issuedate).toLocaleDateString('en-GB');
+
+    }catch (error) {
+
+        console.error(error);
+
+    }
+   
+
+}
+
+
+function toggledate(enable) {
+
+    const reasonDiv = document.getElementById('modalreason');
+    const reasonInput = document.getElementById('reason');
+
+    const recommendedDiv = document.getElementById('recommendedDateDiv');
+    const recommendedInput = document.getElementById('recommendedDate');
+
+    const rejectbtn = document.getElementById('CancleRequest');
+
+    if (enable) {
+
+        // YES
+        reasonDiv.classList.add('d-none');
+        reasonInput.value = "";
+     
+
+        recommendedDiv.classList.add('d-none');
+        recommendedInput.value = "";
+
+        rejectbtn.disabled = true;
+
+
+    } else {
+
+        // NO
+        reasonDiv.classList.remove('d-none');
+       
+
+        recommendedDiv.classList.remove('d-none');
+
+         rejectbtn.disabled = false;
+    
+    }
+}
+
+
+
+document.querySelectorAll('.approvebtn').forEach(button => {
+
+    button.addEventListener('click', function () {
+
+        const date = this.dataset.date;
+        const mNumber = this.dataset.m;
+
+        const receiveDate = document.getElementById('receiveDate');
+        const yes = document.getElementById('approveYes');
+        const section = document.querySelector('.approveSection');
+
+        // Reset first
+        receiveDate.value = "";
+        
+
+        document.getElementById('Mnumber').value = mNumber;
+
+        // Convert DD/MM/YYYY → YYYY-MM-DD
+        console.log(date);
+
+        if (date) {
+
+            const parts = date.split('/');
+
+            if (parts.length === 3) {
+
+                const formattedDate =
+                    `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+
+                receiveDate.value = formattedDate;
+            }
+
+        } else {
+
+            yes.checked = true;
+            toggledate(true);
+
+            
+        }
+
+    });
+
+});
+
+
+
+async function cancleRequest() {
+
+    if (!confirm("Reject Request?")) {
+        return;
+    }
+
+    const Mnumber = document.getElementById("Mnumber").value;
+    const reason = document.getElementById("reason").value;
+
+    // Check only — keep original reasons unchanged
+    if (reason.trim() === "") {
+        alert("Enter the reason");
+        return;
+    }
+
+    try {
+
+        const response = await fetch("/E-mts/planning/cancleRequest", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                Mnumber,
+                reason
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.message || "Failed to cancel request");
+        }
+
+        alert("Request rejected successfully.");
+
+        location.reload();
+
+    } catch (error) {
+
+        console.error("Cancel request error:", error);
+        alert(error.message || "Failed to cancel request.");
+
+    }
+}
+
+
+
+async function uploaded(Mnumber) {
+
+    if (!confirm('Are you sure you want to submit this request?')) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch('/E-mts/planning/updateImaps', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                Mnumber: Mnumber
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Server error');
+        }
+
+        const data = await response.json();
+
+    if (data.success) {
+            alert('Request uploaded successfully.');
+
+            // Optional: reload page
+            location.reload();
+        }
+
+    } catch (error) {
+
+        console.error(error);
+        alert('Failed to update request.');
+
+    }
+}
+
+
+
+
+
+const hrsEl = document.getElementById("hrs");
+const minEl = document.getElementById("min");
+const secEl = document.getElementById("sec");
+
+const dayEl = document.getElementById("day");
+const monthEl = document.getElementById("month");
+const yearEl = document.getElementById("year");
+
+
+
+
+
+const pad = (n) => String(n).padStart(2, "0");
+
+// set date once (static)
+const today = new Date();
+dayEl.textContent = pad(today.getDate());
+monthEl.textContent = pad(today.getMonth() + 1);
+yearEl.textContent = today.getFullYear();
+
+
+
+
+
+
+
+function updateClock() {
+    const now = new Date();
+
+    hrsEl.textContent = pad(now.getHours());
+    minEl.textContent = pad(now.getMinutes());
+    secEl.textContent = pad(now.getSeconds());
+}
+
+// initial render
+updateClock();
+
+// sync clock (better than drifting intervals)
+setInterval(updateClock, 1000);
+
+
+async function itemModal(Mnumber) {
+
+    try{
+
+      const response = await fetch(`/E-mts/planning/fetchItems/${Mnumber}`);
+        if (!response.ok) {
+            throw new Error("Server error");
+        }
+         const data = await response.json();
+
+         let tbody = document.querySelector(".inmodal .tbodymodal");
+
+         tbody.innerHTML = '';
+
+        if (data.length > 0) {
+            data.forEach((e, index) => {
+
+              let no = index +1;
+
+              tbody.innerHTML += `
+                  <tr style="border-bottom: 1px solid #edf0f3;">
+                      <td style="padding: 11px 14px; text-align:center;">${no}</td>
+                      <td style="padding: 11px 14px;">${e.MNumber}</td>
+                      <td style="padding: 11px 14px;">${e.itemno}</td>
+                      <td style="padding: 11px 14px;">${e.itemdesc}</td>
+                      <td style="padding: 11px 14px;">${e.itemcat}</td>
+                      <td style="padding: 11px 14px; text-align:center;">${e.reqqty}</td>
+                      <td style="padding: 11px 14px; text-align:center;">${e.remark || '-'}</td>
+                  </tr>
+              `;
+            });
+
+                const modal = new bootstrap.Modal(document.getElementById('exampleModal'));
+                modal.show();
+                
+        } else {
+
+                      tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center">
+                        No Data
+                    </td>
+                </tr>
+            `;
+
+        }
+
+      
+
+
+
+    }catch(error){
+
+          console.error("Error fetching items:", error);
+
+    }
+
+  
+}
+
+
+async function download() {
+    const requests = JSON.parse('<%- JSON.stringify(Requests) %>');
+
+    const Mnumber = requests.map(e => e.MNumber);
+
+
+    try {
+        const response = await fetch(
+            `/E-mts/Planning/downloadCurrent/${Mnumber}`
+        );
+
+        if (!response.ok) {
+            throw new Error("Server error");
+        }
+
+        const finaldata = await response.json();
+
+console.log(finaldata);
+
+const workbook = new ExcelJS.Workbook();
+
+// Create ONE worksheet
+const worksheet = workbook.addWorksheet('Request Report');
+
+
+// Define columns
+worksheet.columns = [
+
+    {
+        header: 'Reference No',
+        key: 'MNumber',
+        width: 18
+    },
+
+    {
+        header: 'Issue Date',
+        key: 'issuedate',
+        width: 15
+    },
+
+    {
+        header: 'Requestor',
+        key: 'req_name',
+        width: 15
+    },
+
+    {
+        header: 'ID',
+        key: 'req_id',
+        width: 15
+    },
+
+    {
+        header: 'Department',
+        key: 'req_dep',
+        width: 20
+    },
+
+    {
+        header: 'EXT',
+        key: 'req_ext',
+        width: 20
+    },
+
+    {
+        header: 'Issue JOC',
+        key: 'issuejoc',
+        width: 15
+    },
+
+    {
+        header: 'Return JOC',
+        key: 'returnjoc',
+        width: 15
+    },
+
+    {
+        header: 'Spoilage JOC',
+        key: 'spoilagejoc',
+        width: 15
+    },
+
+    {
+        header: 'Item No.',
+        key: 'itemno',
+        width: 15
+    },
+
+    {
+        header: 'Item Description',
+        key: 'itemdesc',
+        width: 30
+    },
+
+    {
+        header: 'Item Category',
+        key: 'itemcat',
+        width: 20
+    },
+
+    {
+        header: 'Quantity',
+        key: 'reqqty',
+        width: 18
+    },
+
+    {
+        header: 'Remarks',
+        key: 'remark',
+        width: 30
+    },
+
+    {
+        header: 'Collection Date',
+        key: 'receiveDate',
+        width: 15
+    },
+        {
+        header: 'Status',
+        key: 'stage',
+        width: 15
+    }
+
+];
+
+
+// Add ALL requests into the same sheet
+finaldata.forEach(request => {
+
+    let stageText = '';
+    
+    switch (request.extraDetails) {
+
+        case 'PL1':
+            stageText = 'Please confirm the receive Date';
+            break;
+
+        case 'PL2':
+            stageText = 'Uploaded into Imaps';
+            break;
+
+        case 'I2':
+            stageText = 'Waiting for resubmission';
+            break;
+
+        case 'PL3':
+            stageText = 'Waiting for new recieve date';
+            break;
+
+        case 'W1':
+            stageText = 'Waiting for Board Production';
+            break;
+
+        default:
+            stageText = request.extraDetails || '';
+    }
+
+    request.details.forEach(detail => {
+
+        worksheet.addRow({
+
+            MNumber: request.MNumber,
+
+            issuedate: request.issuedate
+                ? new Date(request.issuedate).toLocaleDateString('en-GB')
+                : '',
+
+            req_name: request.req_name,
+
+            req_id: request.req_id,
+
+            req_dep: request.req_dep,
+
+            req_ext: request.req_ext,
+
+            issuejoc: request.issuejoc,
+
+            returnjoc: request.returnjoc,
+
+            spoilagejoc: request.spoilagejoc,
+
+            itemno: detail.itemno,
+
+            itemdesc: detail.itemdesc,
+
+            itemcat: detail.itemcat,
+
+            reqqty: detail.reqqty,
+
+            remark: detail.remark,
+
+            receiveDate: request.receiveDate
+                ? new Date(request.receiveDate).toLocaleDateString('en-GB')
+                : '',
+
+            stage: stageText
+
+        });
+
+    });
+
+});
+
+
+// Header formatting
+const headerRow = worksheet.getRow(1);
+
+headerRow.font = {
+    bold: true
+};
+
+headerRow.alignment = {
+    vertical: 'middle',
+    horizontal: 'center'
+};
+
+
+// Center Reference No
+worksheet.getColumn(1).alignment = {
+    vertical: 'middle',
+    horizontal: 'center'
+};
+
+
+// Center Issue JOC
+worksheet.getColumn(7).alignment = {
+    vertical: 'middle',
+    horizontal: 'center'
+};
+
+
+// Center Return JOC
+worksheet.getColumn(8).alignment = {
+    vertical: 'middle',
+    horizontal: 'center'
+};
+
+
+// Center Spoilage JOC
+worksheet.getColumn(9).alignment = {
+    vertical: 'middle',
+    horizontal: 'center'
+};
+
+
+// Center Item No
+worksheet.getColumn(10).alignment = {
+    vertical: 'middle',
+    horizontal: 'center'
+};
+
+
+// Center Quantity
+worksheet.getColumn(13).alignment = {
+    vertical: 'middle',
+    horizontal: 'center'
+};
+
+
+// Freeze header
+worksheet.views = [
+    {
+        state: 'frozen',
+        ySplit: 1
+    }
+];
+
+        // Create Excel file
+        const buffer = await workbook.xlsx.writeBuffer();
+
+
+        // Download
+        const blob = new Blob(
+            [buffer],
+            {
+                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            }
+        );
+
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+
+        a.href = url;
+        let today1 = new Date();
+
+        let day = pad(today1.getDate());
+        let month = pad(today1.getMonth() + 1);
+        let year = today1.getFullYear();
+
+        let full = day + "-" + month + "-" + year;
+
+        a.download = `Request_Report_${full}.xlsx`;
+
+        document.body.appendChild(a);
+
+        a.click();
+
+        a.remove();
+
+        window.URL.revokeObjectURL(url);
+
+
+
+
+    } catch (error) {
+
+        console.error("Excel download error:", error);
+
+        alert("Failed to generate Excel file.");
+
+    }
+
+}
+
+</script>    
+    
+</body>
+</html>

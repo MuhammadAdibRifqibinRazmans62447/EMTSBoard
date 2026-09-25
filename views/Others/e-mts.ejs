@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<link rel="stylesheet" href="/css/form.css">
+<link rel="stylesheet" href="/css/header.css">
+
+    <title>E-MTS</title>
+     
+
+
+</head>
+
+<body>
+
+
+
+
+<% if (user.rc === 'Approval') { %>
+
+    <%- include('../partials/headerSV') %>
+
+<% } else { %>
+
+    <%- include('../partials/header') %>
+
+<% } %>
+
+
+<% if(success.length > 0){ %>
+    <div class="alert alert-success">
+        <%= success[0] %>
+    </div>
+<% } %>
+
+<div class="container-fluid px-4" style="margin-top: 100px;">
+
+    <h1 class="mt-4 text-center">Material Transaction Sheet</h1>
+
+    <div class="row">
+            <div class="col-12 d-flex justify-content-end">
+                <button type="button" 
+                        class="btn btn-danger"
+                        style="font-size:20px;"
+                        id="internal" disabled>
+                    Internal&nbsp;Use&nbsp;Only
+                </button>
+            </div>
+    </div>
+
+   
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="post" action="/E-mts/board/submitRequest">
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-12">
+                            Issue Date:
+                            <span id="issueDay">00</span> /
+                            <span id="issueMonth">00</span> /
+                            <span id="issueYear">00</span>
+
+                            </div>
+                        </div>
+                       <div style="height:10px;"></div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table>
+                                    <tr>
+                                        <td></td>
+                                        <td><b>Requestor</b></td>
+                                        <td><b>Approval 1</b></td>
+                                        <td><b>Approval 2</b></td>
+                                        <td><b>Approval 3</b></td>
+
+
+                                    </tr>
+
+                                    <tr>
+                                       <td>Name&nbsp;:</td>
+                                       <td><input type="text" class="form-control" id="requestorName" name="requestorName" value="<%= user.name %>" readonly /> </td>
+									   <td><input type="text" class="form-control"  id="approval1Name" name="approval1Name" readonly></td>
+									   <td><input type="text" class="form-control"  id="approval2Name" name="approval2Name" readonly></td>
+									   <td><input type="text" class="form-control"  id="approval3Name" name="approval3Name" readonly></td>
+
+
+                                    </tr>
+
+                                    <tr>
+									  <td>ID&nbsp;:</td>
+									  <td><input type="text" class="form-control" id="requestorID" name="requestorID"  value="<%= user.id %>" readonly /></td>
+									  <td><input type="text" class="form-control"  id="approval1ID" name="approval1ID" readonly></td>
+									  <td><input type="text" class="form-control"  id="approval2ID" name="approval2ID" readonly></td>
+									  <td><input type="text" class="form-control"  id="approval3ID" name="approval3ID" readonly></td>
+									</tr>
+
+                                    <tr>
+										<td>DEPT&nbsp;:</td>
+										<td><input type="text" class="form-control"  id="requestorDep" name="requestorDep" value="<%= user.dept %>" readonly /></td>
+										<td><input type="text" class="form-control"  id="approval1Dep" name="approval1Dep" readonly></td>
+										<td><input type="text" class="form-control"  id="approval2Dep" name="approval2Dep" readonly></td>
+										<td><input type="text" class="form-control" id="approval3Dep" name="approval3Dep" readonly></td>
+									</tr>
+
+									<tr>
+										<td>EXT&nbsp;:</td>
+										<td><input type="text" class="form-control"  id="requestorExt" name="requestorExt"  value="<%= user.ext %>" /></td>
+										<td><input type="text" class="form-control" id="approval1Ext" name="approval1Ext" readonly></td>
+										<td><input type="text" class="form-control"  id="approval2Ext" name="approval2Ext" readonly></td>
+										<td><input type="text" class="form-control"  id="approval3Ext" name="approval3Ext" readonly></td>
+									</tr>
+									<tr>
+										<td>DATE/TIME&nbsp;:</td>
+										<td>
+											<input type="text" 
+												class="form-control" 
+												id="requestorDateTime" 
+												name="requestorDateTime"  
+												readonly />
+										</td>
+										<td><input type="text" class="form-control" id="approval1DateTime" name="approval1DateTime" readonly></td>
+										<td><input type="text" class="form-control"  id="approval2DateTime" name="approval2DateTime" readonly></td>
+										<td><input type="text" class="form-control"  id="approval3DateTime" name="approval3DateTime" readonly></td>
+									</tr>
+
+
+
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+
+                            <table>
+								<tr>
+									<td ><b>MTS&nbsp;No:&nbsp;</b></td>
+									<td><input type="text" readonly id="mtsno" name="mtsno" value="<%= serial%>" readonly></td>
+								</tr>
+								<tr>
+									<td><b>Recieve Date:&nbsp;</b></td>
+									<td><input type="text"  id="remarkmts" name="receiveDate" value=""" disabled></td>
+								</tr>
+							</table>
+                            <table >
+								<!-- <tr >
+									<td width="10%"><input type="button" class="btn btn-secondary" value="A"></td>
+									<td width="20%">-&nbsp;Warehouse&nbsp;Transfer:</td>
+									<td width="70%"><input type="text"  id="whtranser" name="whtranser"></td>
+								</tr> -->
+								<tr>
+									<td><input type="button" class="btn btn-secondary" value="A"></td>
+									<td>-&nbsp;Return&nbsp;JOC:</td>
+									<td><input type="text" id="returnjoc" name="returnjoc"></td>
+								</tr>
+								<tr>
+									<td><input type="button" class="btn btn-secondary" value="B"></td>
+									<td>-&nbsp;Issue&nbsp;JOC:</td>
+									<td>
+									<input 
+																type="text" 
+																id="issuejoc" 
+																name="issuejoc" 
+																oninput="this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '')">
+									</td>
+								</tr>
+								<tr>
+								    <td><input type="button" class="btn btn-secondary" value="C"></td>
+									<td>-&nbsp;Spoilage&nbsp;JOC&nbsp;/&nbsp;WS:</td>
+									<td><input type="text"  id="spoilagejoc" name="spoilagejoc" onchange="getJOC(this.value)" onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')" oninput="this.value = this.value.toUpperCase()"  required>
+                                        <div id="jocwarn"></div>
+                                    </td>
+                                    <input type="hidden"  id="jocdet" name="jocdet">
+								</tr>
+								<!-- <tr>
+									<td><input type="button" class="btn btn-secondary" value="E"></td>
+									<td>-&nbsp;RTS&nbsp;/&nbsp;HANDOVER:</td>
+									<td >
+								         <select id="rtshandover" name="rtshandover">
+												<option value="" selected disabled>Select Type</option>
+												<option value="RTS">RTS</option>
+												<option value="PANEL">PANEL</option>
+										 </select>
+									</td>
+														
+								</tr> -->
+								 <!-- <tr>
+									<td><input type="button" class="btn btn-secondary" value="F"></td>
+									<td>-&nbsp;S.O&nbsp;No:</td>
+									<td><input type="text"  id="sono" name="sono"></td>
+								</tr> -->
+								<!-- <tr>
+									<td><input type="button" class="btn btn-secondary" value="G"></td>
+									<td>-&nbsp;Customer:</td>
+									<td><input type="text"  id="customer" name="customer"></td>
+								</tr> -->
+
+							</table>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row mb-2">
+                    <div class="col-md-12">
+                        <table id="ItemTable" style="margin:auto;">
+
+                            <tr style="font-size:12px;">
+								<th class="text-center">ITEM&nbsp;NO</th>
+								<th class="text-center">ITEM&nbsp;DESC</th>
+								<th class="text-center">ITEM&nbsp;CAT</th>
+								<!-- <th class="text-center">FROM&nbsp;WHS</th>
+								<th class="text-center">TO&nbsp;WHS</th> -->
+								<th class="text-center">REQ&nbsp;QTY</th>
+								<!-- <th class="text-center">ISSUE&nbsp;QTY</th> -->
+								<th class="text-center">REMARK</th>
+								<th class="text-center"><input type="button" class="btn btn-secondary" onclick="addRow()" value="+ Add"></th>
+													
+
+							</tr>
+
+                            <tr>
+								<td><input type="text" class="form-control itemno" id="itemno1" name="itemno[]" onchange="getData(this.value,1)" onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')" oninput="this.value = this.value.toUpperCase()" required></td>
+								<td><input type="text" class="form-control" id="itemdesc1" name="itemdesc[]" style="width:100%;" required></td>
+								<td><input type="text" class="form-control" id="itemcat1" name="itemcat[]" style="width:100%;" required></td>
+								<!-- <td><input type="text" class="form-control" id="fromwhs1" name="fromwhs[]" style="width:100%;"></td>
+								<td><input type="text" class="form-control" id="towhs1" name="towhs[]" style="width:100%;"></td> -->
+								<td><input type="number" class="form-control reqqty" id="reqqty1" name="reqqty[]" onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')" style="width:100%;" required></td>
+								<!-- <td><input type="text" class="form-control" id="issueqty1" name="issueqty[]" style="width:100%;" readonly></td> -->
+								<td><input type="text" class="form-control" id="remark1" name="remark[]" style="width:100%;" required></td>
+								<td class="text-center"><input type="button" class="btn btn-secondary" onclick="deleteRow(this)" value="Delete"></td>
+							</tr>
+
+							<tr id="nextAdd"></tr>
+
+
+                        </table>
+                    </div>
+                </div>
+                		<div class="row">
+							<div class="col-md-12 text-center">
+									<input type="submit" class="btn btn-primary" value="Submit" onclick="return validateSubmit()">
+							</div>
+						</div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+    
+<script>
+
+window.addEventListener("pageshow", function(event) {
+    if (event.persisted) {
+        window.location.reload();
+    }
+});
+
+
+function validateSubmit(){
+
+    // Check JOC
+    const returnjoc = document.getElementById("returnjoc").value.trim();
+    const spoilagejoc = document.getElementById("spoilagejoc").value.trim();
+
+    if(spoilagejoc === ""){
+        alert("Please enter Spoilage JOC");
+        return false;
+    }
+
+
+    // Check item rows
+    const itemno = document.getElementsByName("itemno[]");
+    const itemdesc = document.getElementsByName("itemdesc[]");
+    const itemcat = document.getElementsByName("itemcat[]");
+    const reqqty = document.getElementsByName("reqqty[]");
+    const remark = document.getElementsByName("remark[]");
+
+
+if (itemno.length > 0) {
+    for (let i = 0; i < itemno.length; i++) {
+
+        if (itemno[i].value.trim() === "") {
+            alert(`Please enter Item No at row ${i + 1}`);
+            itemno[i].focus();
+            return false;
+        }
+
+        if (itemdesc[i].value.trim() === "") {
+            alert(`Please enter Item Description at row ${i + 1}`);
+            itemdesc[i].focus();
+            return false;
+        }
+
+        if (itemcat[i].value.trim() === "") {
+            alert(`Please enter Item Category at row ${i + 1}`);
+            itemcat[i].focus();
+            return false;
+        }
+
+        if (reqqty[i].value.trim() === "" || Number(reqqty[i].value) <= 0) {
+            alert(`Please enter valid quantity at row ${i + 1}`);
+            reqqty[i].focus();
+            return false;
+        }
+
+        if (remark[i].value.trim() === "") {
+            alert(`Please enter Remark at row ${i + 1}`);
+            remark[i].focus();
+            return false;
+        }
+    }
+} else {
+    alert("Please enter any item");
+    return false;
+}
+
+    return true;
+}
+
+
+
+let rowCount = 1;
+
+function addRow(){
+    var target = document.getElementById("nextAdd");
+    rowCount++;
+    target.insertAdjacentHTML("beforebegin",`
+    
+                             <tr>
+								<td><input type="text" class="form-control itemno" id="itemno${rowCount}" name="itemno[]" onchange="getData(this.value,${rowCount})" onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')" oninput="this.value = this.value.toUpperCase()"></td>
+								<td><input type="text" class="form-control" id="itemdesc${rowCount}" name="itemdesc[]" style="width:100%;"></td>
+								<td><input type="text" class="form-control" id="itemcat${rowCount}" name="itemcat[]" style="width:100%;"></td>
+
+								<td><input type="number" class="form-control reqqty" id="reqqty${rowCount}" name="reqqty[]" onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9]/g, '')" style="width:100%;"></td>
+								
+								<td><input type="text" class="form-control" id="remark${rowCount}" name="remark[]" style="width:100%;"></td>
+								<td class="text-center"><input type="button" class="btn btn-secondary" onclick="deleteRow(this)" value="Delete"></td>
+							</tr> `);
+
+
+   
+    
+
+}
+
+async function getJOC(joc) {
+
+    try {
+
+        joc = joc.trim();
+
+        const input = document.getElementById("spoilagejoc");
+        const jocdet = document.getElementById("jocdet");
+
+        if (joc === "") {
+            input.style.removeProperty("background-color");
+            jocdet.value = "";
+            return;
+        }
+
+        const response = await fetch(`/E-mts/board/verify/${joc}`);
+
+        if (!response.ok) {
+            throw new Error("Server error");
+        }
+
+        const data = await response.json();
+
+        if (data.length > 0) {
+
+            const prod = data[0].DEP;
+
+            jocdet.value = prod;
+
+            // JOC exists → green
+            input.style.setProperty(
+                "background-color",
+                "#d4edda",
+                "important"
+            );
+            document.getElementById('jocwarn').innerHTML = '';
+
+        } else {
+
+            // JOC doesn't exist → reset
+           document.getElementById('jocwarn').innerHTML = '<strong>JOC does not exist</strong>';
+            input.style.setProperty(
+                "background-color",
+                "#f8d7da",
+                "important"
+            );
+          
+
+            input.value = "";
+            jocdet.value = "";
+
+           
+        }
+
+    } catch (error) {
+
+        console.error("Verify JOC error:", error);
+
+        // Request failed → reset
+        const input = document.getElementById("spoilagejoc");
+        const jocdet = document.getElementById("jocdet");
+
+        input.value = "";
+        jocdet.value = "";
+
+        input.style.removeProperty("background-color");
+
+        alert("Unable to verify JOC");
+    }
+}
+
+
+ function getData(itemno, no){
+
+    let allitemno = document.querySelectorAll(".itemno");
+    let duplicate = false;
+
+    allitemno.forEach(input => {
+
+        if(input.id !== "itemno" + no){
+
+            if(input.value === itemno){
+
+                duplicate = true;
+
+            }
+
+        }
+
+    });
+	
+
+    if(duplicate){
+
+        alert("Item already exists!");
+
+        document.getElementById("itemno" + no).value = "";
+
+        return;
+    }
+
+	    if(itemno.trim() === ""){
+
+        let desc = document.getElementById("itemdesc" + no);
+        let cat = document.getElementById("itemcat" + no);
+
+
+        // If description is currently a select, change it back to input
+        if(desc.tagName === "SELECT"){
+
+            desc.outerHTML = `
+                <input 
+                    type="text"
+                    class="form-control"
+                    id="itemdesc${no}"
+                    name="itemdesc[]"
+                    style="width:100%;">
+            `;
+
+        }
+
+
+        document.getElementById("itemdesc" + no).value = "";
+        cat.value = "";
+
+        return;
+    }
+
+	if(itemno !== "" && "M" === itemno.charAt(0)){
+
+		dbdata(itemno, no);
+	}else{
+
+		alert("Not M Number");
+		document.getElementById("itemno" + no).value = "";
+		
+
+
+	}
+     
+	
+
+
+
+}
+
+async function dbdata(itemno, no){
+
+    try{
+
+        const response = await fetch(`/E-mts/board/getdata/${itemno}`);
+
+
+
+
+        const data = await response.json();
+		console.log(data);
+
+		if(data.length === 0){
+
+            alert("Item not found");
+			
+
+			document.getElementById("itemno" + no).value = "";
+            document.getElementById("itemdesc" + no).value = "";
+            document.getElementById("itemcat" + no).value = "";
+
+            return;
+        }
+
+        let desc = document.getElementById("itemdesc" + no);
+        let cat  = document.getElementById("itemcat" + no);
+
+
+        // Type is always the same, set once
+        cat.value = data[0].prod_type;
+
+
+        if(data.length > 1){
+
+            let options = `
+                <option value="" disabled selected>
+                    Select Description
+                </option>
+            `;
+
+
+            data.forEach(item => {
+
+                options += `
+                    <option value="${item.Mount_desc}">
+                        ${item.Mount_desc}
+                    </option>
+                `;
+
+            });
+
+
+            // Convert input to select
+            if(desc.tagName !== "SELECT"){
+
+                desc.outerHTML = `
+                    <select 
+                        class="form-control"
+                        id="itemdesc${no}"
+                        name="itemdesc[]">
+
+                        ${options}
+
+                    </select>
+                `;
+
+            }
+            else{
+
+                // Already select, just refresh options
+                desc.innerHTML = options;
+
+            }
+
+
+        }
+        else if(data.length === 1){
+
+
+            // Convert select back to input
+            if(desc.tagName === "SELECT"){
+
+                desc.outerHTML = `
+                    <input 
+                        type="text"
+                        class="form-control"
+                        id="itemdesc${no}"
+                        name="itemdesc[]">
+                `;
+
+                desc = document.getElementById("itemdesc" + no);
+
+            }
+
+
+            desc.value = data[0].Mount_desc;
+
+        }
+
+
+    }
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
+	
+
+
+
+
+
+function deleteRow(button){
+
+    const row = button.closest("tr");
+
+    row.remove();
+
+}
+
+
+const hrsEl = document.getElementById("hrs");
+const minEl = document.getElementById("min");
+const secEl = document.getElementById("sec");
+
+const dayEl = document.getElementById("day");
+const monthEl = document.getElementById("month");
+const yearEl = document.getElementById("year");
+
+const IsdayEl = document.getElementById("issueDay");
+const IsmonthEl = document.getElementById("issueMonth");
+const IsyearEl = document.getElementById("issueYear");
+
+
+
+const pad = (n) => String(n).padStart(2, "0");
+
+// set date once (static)
+const today = new Date();
+dayEl.textContent = pad(today.getDate());
+monthEl.textContent = pad(today.getMonth() + 1);
+yearEl.textContent = today.getFullYear();
+
+IsdayEl.textContent = pad(today.getDate());
+IsmonthEl.textContent = pad(today.getMonth() + 1);
+IsyearEl.textContent = today.getFullYear();
+
+
+
+
+
+function updateClock() {
+    const now = new Date();
+
+    hrsEl.textContent = pad(now.getHours());
+    minEl.textContent = pad(now.getMinutes());
+    secEl.textContent = pad(now.getSeconds());
+}
+
+
+    function setRequestDateTime() {
+        const now = new Date();
+
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+
+        const dateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+        document.getElementById("requestorDateTime").value = dateTime;
+    }
+
+    setRequestDateTime();
+
+// initial render
+updateClock();
+
+// sync clock (better than drifting intervals)
+setInterval(updateClock, 1000);
+
+
+
+</script>
+
+
+    
+</body>
+</html>

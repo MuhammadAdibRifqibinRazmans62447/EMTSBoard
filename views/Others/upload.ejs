@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <title>Document</title>
+<link rel="stylesheet" href="/css/header.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+  :root {
+    --bg: #F4F3EF;
+    --surface: #FFFFFF;
+    --border: #D9D6CF;
+    --border-active: #1A1A2E;
+    --text-primary: #1A1A2E;
+    --text-secondary: #6B6860;
+    --text-muted: #A09C96;
+    --accent: #0066FF;
+    --accent-light: #EBF2FF;
+    --accent-glow: rgba(0, 102, 255, 0.12);
+    --success: #00A878;
+    --success-light: #E6F7F3;
+    --error: #E63946;
+    --error-light: #FDECEA;
+    --shadow-sm: 0 1px 3px rgba(26,26,46,0.06), 0 1px 2px rgba(26,26,46,0.04);
+    --shadow-md: 0 4px 16px rgba(26,26,46,0.08), 0 2px 6px rgba(26,26,46,0.04);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+ 
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    
+}
+
+.card {
+    background: var(--surface);
+    border-radius: 20px;
+    box-shadow: var(--shadow-md);
+    width: 100%;
+    max-width: 520px;
+    overflow: hidden;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+ 
+  .card-header {
+    padding: 28px 32px 0;
+  }
+ 
+  .card-header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+  }
+ 
+  .card-header p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    font-weight: 400;
+  }
+ 
+  .card-body {
+    padding: 20px 32px 32px;
+  }
+ 
+  /* ── Drop Zone ── */
+  .drop-zone {
+    position: relative;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    background: #FAFAF8;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+    outline: none;
+  }
+ 
+  .drop-zone:hover,
+  .drop-zone:focus-visible {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+ 
+  .drop-zone.drag-over {
+    border-color: var(--accent);
+    border-style: solid;
+    background: var(--accent-light);
+    transform: scale(1.005);
+    box-shadow: 0 0 0 4px var(--accent-glow);
+  }
+ 
+  .drop-zone input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+ 
+  .drop-zone-inner {
+    padding: 40px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    pointer-events: none;
+  }
+ 
+  .upload-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+ 
+  .drop-zone.drag-over .upload-icon {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(0,102,255,0.15);
+    border-color: var(--accent);
+  }
+ 
+  .upload-icon svg {
+    width: 22px;
+    height: 22px;
+    stroke: var(--text-secondary);
+    transition: stroke 0.2s ease;
+  }
+ 
+  .drop-zone.drag-over .upload-icon svg,
+  .drop-zone:hover .upload-icon svg {
+    stroke: var(--accent);
+  }
+ 
+  .drop-zone-text {
+    text-align: center;
+  }
+ 
+  .drop-zone-text strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.4;
+  }
+ 
+  .drop-zone-text strong span {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+ 
+  .drop-zone-text small {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.01em;
+    margin-top: 3px;
+    display: block;
+  }
+ 
+  /* ── File List ── */
+  .file-list {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+ 
+  .file-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    background: #FAFAF8;
+    border: 1px solid var(--border);
+    animation: slideIn 0.2s ease forwards;
+  }
+ 
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+ 
+  .file-item.success { background: var(--success-light); border-color: #C0E9DF; }
+  .file-item.error   { background: var(--error-light);   border-color: #F5C6C9; }
+ 
+  .file-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+ 
+  .file-icon svg { width: 14px; height: 14px; stroke: var(--text-secondary); }
+ 
+  .file-info { flex: 1; min-width: 0; }
+ 
+  .file-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+ 
+  .file-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    margin-top: 1px;
+  }
+ 
+  .file-status {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+ 
+  .file-status.ok   { background: var(--success); }
+  .file-status.fail { background: var(--error); }
+  .file-status svg  { width: 10px; height: 10px; stroke: #fff; stroke-width: 2.5; }
+ 
+  .remove-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s, border-color 0.15s;
+  }
+ 
+  .remove-btn:hover { background: var(--error-light); border-color: var(--error); }
+  .remove-btn svg   { width: 10px; height: 10px; stroke: var(--text-muted); pointer-events: none; }
+  .remove-btn:hover svg { stroke: var(--error); }
+ 
+  /* ── Progress Bar ── */
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+ 
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+ 
+  /* ── Actions ── */
+  .actions {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+ 
+  .btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    padding: 9px 18px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s ease;
+    line-height: 1;
+  }
+ 
+  .btn-primary {
+    background: var(--text-primary);
+    color: #fff;
+    flex: 1;
+    letter-spacing: -0.1px;
+  }
+ 
+  .btn-primary:hover   { background: #2d2d4e; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,26,46,0.2); }
+  .btn-primary:active  { transform: translateY(0); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+ 
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+  }
+ 
+  .btn-ghost:hover { border-color: var(--text-primary); color: var(--text-primary); }
+ 
+  /* ── Summary tag ── */
+  .summary {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-left: auto;
+    font-family: 'DM Mono', monospace;
+  }
+ 
+  /* ── Mobile ── */
+  @media (max-width: 480px) {
+    .card-header, .card-body { padding-left: 20px; padding-right: 20px; }
+    .drop-zone-text strong { font-size: 13px; }
+    .drop-zone-inner { padding: 32px 16px; }
+    .actions { flex-wrap: wrap; }
+    .summary { width: 100%; text-align: center; margin-left: 0; order: -1; }
+  }
+
+
+</style>
+
+
+
+</head>
+<body>
+
+        <% if (user.rc === 'Requestor') { %>
+
+    <%- include('../partials/header') %>
+
+<% } else { %>
+
+    <%- include('../partials/headerSV') %>
+
+<% } %>
+
+<div class="card">
+  <div class="card-header">
+    <h1>Upload files</h1>
+    <p>Upload The Excell File.</p>
+  </div>
+  <div class="card-body">
+ 
+    <div class="drop-zone" id="dropZone" tabindex="0" role="button" aria-label="Drop files here or click to browse">
+      <input type="file" id="fileInput"  aria-hidden="true" tabindex="-1">
+      <div class="drop-zone-inner">
+        <div class="upload-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 16 12 12 8 16"/>
+            <line x1="12" y1="12" x2="12" y2="21"/>
+            <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+          </svg>
+        </div>
+        <div class="drop-zone-text">
+          <strong id="dropLabel">Drag files here or <span>click to browse</span></strong>
+          <small>XLSX · up to 25 MB each</small>
+        </div>
+      </div>
+    </div>
+ 
+    <div class="file-list" id="fileList"></div>
+ 
+    <div class="actions" id="actions" style="display:none">
+      <button class="btn btn-ghost" id="clearBtn" type="button">Clear all</button>
+      <button class="btn btn-primary" id="uploadBtn" type="button">Upload files</button>
+      <span class="summary" id="summary"></span>
+    </div>
+ 
+  </div>
+</div>
+
+
+
+
+<div class="modal fade"
+     id="staticBackdrop"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     tabindex="-1"
+     aria-labelledby="staticBackdropLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+
+            <div class="modal-body p-5">
+
+                <div class="mb-3">
+                    <i class="fa-solid fa-circle-check text-success"
+                       style="font-size: 60px;">
+                    </i>
+                </div>
+
+                <h4 class="mb-2" id="staticBackdropLabel">
+                    
+                </h4>
+
+                <p class="text-muted mb-4" id="labelrow">
+                    
+                </p>
+
+                <button type="button"
+                        class="btn  px-4"
+                        id="modalbtn"
+                        data-bs-dismiss="modal">
+                    Close
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script>
+    const dropZone  = document.getElementById('dropZone');
+  const fileInput = document.getElementById('fileInput');
+  const fileList  = document.getElementById('fileList');
+  const actions   = document.getElementById('actions');
+  const clearBtn  = document.getElementById('clearBtn');
+  const uploadBtn = document.getElementById('uploadBtn');
+  const summary   = document.getElementById('summary');
+  const dropLabel = document.getElementById('dropLabel');
+ 
+  let files = [];
+ 
+  /* ── Responsive label ── */
+  function updateLabel() {
+    const isMobile = 'ontouchstart' in window || window.matchMedia('(pointer:coarse)').matches;
+    dropLabel.innerHTML = isMobile
+      ? 'Tap to select files'
+      : 'Drag files here or <span>click to browse</span>';
+  }
+  updateLabel();
+ 
+  /* ── Click to browse ── */
+  dropZone.addEventListener('click', () => fileInput.click());
+
+ 
+  fileInput.addEventListener('change', () => {
+    console.log(fileInput.files[0]);
+    addFiles(fileInput.files[0]);
+    fileInput.value = '';
+  });
+ 
+  /* ── Drag events ── */
+  ['dragenter','dragover'].forEach(evt =>
+    dropZone.addEventListener(evt, e => { e.preventDefault(); dropZone.classList.add('drag-over'); })
+  );
+ 
+  ['dragleave','dragend'].forEach(evt =>
+    dropZone.addEventListener(evt, e => {
+      if (!dropZone.contains(e.relatedTarget)) dropZone.classList.remove('drag-over');
+    })
+  );
+ 
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    addFiles(e.dataTransfer.files[0]);
+  });
+ 
+  /* ── File management ── */
+  function fmtSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024**2) return (bytes/1024).toFixed(1) + ' KB';
+    return (bytes/1024**2).toFixed(1) + ' MB';
+  }
+ 
+  function addFiles(newFiles) {
+
+    const MAX = 25 * 1024 * 1024;
+
+    const names = {
+        M6: 'stamping 2984.xlsx',
+        M5: 'stamping 2954.xlsx',
+        M4: 'stamping 2943.xlsx'
+    };
+
+    if (!Object.values(names).includes(newFiles.name)) {
+        alert('Invalid file name.');
+        return;
+    }
+
+    files[0] = {
+        file: newFiles,
+        valid: newFiles.size <= MAX
+    };
+
+    console.log(files[0]);
+
+    // newFiles.forEach(f => {
+    //   if (files.find(x => x.file.name === f.name && x.file.size === f.size)) return;
+    //   files.push({ file: f, valid: f.size <= MAX });
+    // });
+    render();
+  }
+ 
+  function render() {
+    fileList.innerHTML = '';
+    files.forEach((entry, i) => {
+      const { file, valid } = entry;
+      const item = document.createElement('div');
+      item.className = `file-item ${valid ? 'success' : 'error'}`;
+      item.innerHTML = `
+        <div class="file-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+        </div>
+        <div class="file-info">
+          <div class="file-name">${file.name}</div>
+          <div class="file-meta">${fmtSize(file.size)} · ${file.type || 'unknown'}</div>
+          ${!valid ? '<div class="progress-bar"><div class="progress-fill" style="width:100%;background:var(--error)"></div></div>' : ''}
+        </div>
+        <div class="file-status ${valid ? 'ok' : 'fail'}">
+          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            ${valid
+              ? '<polyline points="20 6 9 17 4 12"/>'
+              : '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>'}
+          </svg>
+        </div>
+        <button class="remove-btn" data-index="${i}" aria-label="Remove ${file.name}" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>`;
+      fileList.appendChild(item);
+    });
+ 
+    fileList.querySelectorAll('.remove-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        files.splice(+btn.dataset.index, 1);
+        render();
+      });
+    });
+ 
+    const valid = files.filter(f => f.valid).length;
+    const total = files.length;
+    actions.style.display = total ? 'flex' : 'none';
+    summary.textContent = total ? `${valid}/${total} ready` : '';
+    uploadBtn.disabled = valid === 0;
+  }
+ 
+  clearBtn.addEventListener('click', () => { files = []; render(); });
+ 
+  /* ── Simulated upload ── */
+
+uploadBtn.addEventListener('click', async () => {
+
+    uploadBtn.disabled = true;
+    uploadBtn.textContent = 'Uploading…';
+
+    const file = files[0].file;
+
+    const item = fileList.querySelector('.file-item.success');
+
+    let bar = item.querySelector('.progress-bar');
+
+    if (!bar) {
+        bar = document.createElement('div');
+        bar.className = 'progress-bar';
+        bar.innerHTML = '<div class="progress-fill"></div>';
+        item.querySelector('.file-info').appendChild(bar);
+    }
+
+    const fill = bar.querySelector('.progress-fill');
+
+    let pct = 0;
+    let paused = false;
+    let uploadFinished = false;
+
+    // Fake progress: only go up to 75%
+    const iv = setInterval(() => {
+
+        pct = Math.min(pct + Math.random() * 18, 75);
+
+        fill.style.width = pct + '%';
+
+        if (pct >= 75) {
+            clearInterval(iv);
+        }
+
+    }, 120);
+
+    // Do the real work
+    try {
+
+            const [excelData, rowuploaded, newfilename] = await extractExcel(file);
+
+            const newFile = new File(
+                [file],
+                newfilename,
+                { type: file.type }
+            );
+
+            const formData = new FormData();
+
+            formData.append('file', newFile);
+            formData.append('excelData', JSON.stringify(excelData));
+
+            const response = await fetch('/E-mts/board/uploadExcell', {
+                method: 'POST',
+                body: formData
+            });
+
+    const result = await response.json();
+    console.log('SERVER RESPONSE:', result);
+
+    if (!response.ok || !result.success) {
+        throw new Error(
+            result.message || `Upload failed: ${response.status}`
+        );
+    }
+
+    
+   
+
+    const finishProgress = setInterval(() => {
+
+        pct += 5;
+
+        if (pct >= 100) {
+            pct = 100;
+            clearInterval(finishProgress);
+
+            fill.style.background = 'var(--success)';
+            uploadBtn.textContent = 'Upload complete';
+
+
+
+            const modalElement = document.getElementById('staticBackdrop');
+            const statuspate = document.getElementById('staticBackdropLabel');
+            const rowtell = document.getElementById('labelrow');
+            const modalbtn = document.getElementById('modalbtn');
+
+            const modal = new bootstrap.Modal(modalElement);
+
+            statuspate.innerHTML = '';
+            rowtell.innerHTML = '';
+
+            statuspate.innerHTML = 'File Successfully uploaded';
+            rowtell.innerHTML = `Successfully inserted ${rowuploaded} item number`;
+            modalbtn.classList.remove('btn-danger');
+            modalbtn.classList.add('btn-success');
+
+ 
+
+            modal.show();
+
+            modalElement.addEventListener('hidden.bs.modal', () => {
+                window.location.reload();
+            }, { once: true });
+        }
+
+        fill.style.width = pct + '%';
+
+    }, 100);
+   
+
+    uploadBtn.textContent = 'Upload complete';
+
+
+} catch (err) {
+const modalElement = document.getElementById('staticBackdrop');
+const statuspate = document.getElementById('staticBackdropLabel');
+const rowtell = document.getElementById('labelrow');
+const modalbtn = document.getElementById('modalbtn');
+ const modal = new bootstrap.Modal(modalElement);
+modalbtn.classList.add('btn-danger');
+modalbtn.classList.remove('btn-success');
+
+statuspate.innerHTML = '';
+rowtell.innerHTML = '';
+
+fill.style.background = 'var(--error)';
+uploadBtn.textContent = 'Upload failed';
+
+statuspate.innerHTML = 'Upload Failed';
+rowtell.innerHTML = err.message;
+
+modal.show();
+
+modalElement.addEventListener('hidden.bs.modal', () => {
+    window.location.reload();
+}, { once: true });
+
+
+
+} finally {
+
+    uploadBtn.disabled = false;
+
+}
+});
+
+
+
+async function extractExcel(file) {
+
+    // Match Excel filename to machine
+    const names = {
+        M6: 'stamping 2984.xlsx',
+        M5: 'stamping 2954.xlsx',
+        M4: 'stamping 2943.xlsx'
+    };
+
+    const machine = Object.keys(names).find(
+        key => names[key] === file.name
+    );
+
+    // Current date in DD-MM-YYYY
+    const now = new Date();
+
+    const date =
+        String(now.getDate()).padStart(2, '0') + '-' +
+        String(now.getMonth() + 1).padStart(2, '0') + '-' +
+        now.getFullYear();
+
+    const timestamp =
+    `${now.getFullYear()}-` +
+    `${String(now.getMonth() + 1).padStart(2, '0')}-` +
+    `${String(now.getDate()).padStart(2, '0')}_` +
+    `${String(now.getHours()).padStart(2, '0')}-` +
+    `${String(now.getMinutes()).padStart(2, '0')}-` +
+    `${String(now.getSeconds()).padStart(2, '0')}`;
+
+      
+
+    
+
+    // Read Excel file
+    const arrayBuffer = await file.arrayBuffer();
+
+    const workbook = XLSX.read(arrayBuffer);
+
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+
+    const rows = XLSX.utils.sheet_to_json(worksheet, {
+        header: 1,
+        defval: ''
+    });
+
+    // Excel row 3 = JavaScript index 2
+    const headerRow = rows[2];
+
+        if (!headerRow || headerRow.length === 0) {
+        throw new Error('Header row not found please check the file');
+    }
+
+
+    console.log('HEADER ROW:', headerRow);
+
+    // Create column mapping
+    const columns = {};
+
+    headerRow.forEach((header, index) => {
+        columns[String(header).trim().toUpperCase()] = index;
+    });
+
+    console.log('COLUMNS:', columns);
+
+    const excelData = [];
+
+    // Remember previous COMB DESC
+    let lastCombDesc = '';
+    let rowuploaded =0;
+
+   if (columns['M NO'] === undefined) {
+    throw new Error('Invalid Format cannot found M NO');
+  }
+
+  if (columns['COMB DESC'] === undefined) {
+    throw new Error('Invalid format cannot found COMB DESC');
+}
+
+  if (columns['MOUNT DESC'] === undefined) {
+    throw new Error('Invalid format cannot found MOUNT DESC');
+}
+
+  const extension = file.name.substring(file.name.lastIndexOf('.'));
+  const name = file.name.substring(0, file.name.lastIndexOf('.'));
+
+  let newfilename = `${name}_${timestamp}${extension}`;
+    // Excel row 4 = JavaScript index 3
+    for (let i = 3; i < rows.length; i++) {
+
+        const row = rows[i];
+
+        // Get M NO
+        let rawMno = row[columns['M NO']] || '';
+
+        // Skip row if M NO is empty
+        if (!String(rawMno).trim()) {
+            continue;
+        }
+
+        // Remove "-" from M NO
+        rawMno = String(rawMno).replace(/-/g, '');
+
+        // Get COMB DESC
+        let combDesc = row[columns['COMB DESC']] || '';
+      
+        if (!String(combDesc).trim()) {
+          combDesc = row[columns['MOUNT DESC']] || '';
+
+            
+        }
+
+        //         if (!String(combDesc).trim()) {
+        //   combDesc = row[columns['BOARD NAME']] || '';
+
+            
+        // }
+
+        if (!String(combDesc).trim()) {
+               throw new Error(`Data missing at row ${i + 1}`);
+        }
+
+        // If COMB DESC has a value,
+        // remember it for following rows
+
+        // if (String(combDesc).trim()) {
+
+        //     lastCombDesc = String(combDesc).trim();
+
+        // } else {
+
+        //     // Use previous COMB DESC
+        //     combDesc = lastCombDesc;
+        // }
+
+        // // If still empty, use BOARD NAME
+        // if (!String(combDesc).trim()) {
+        //     combDesc = row[columns['BOARD NAME']] || '';
+        // }
+
+        
+     
+
+        // Add row
+        excelData.push({
+            M_NO: rawMno,
+            Mount_desc: String(combDesc).trim(),
+            type: machine,
+            filedate: date,
+            filename: newfilename
+        });
+        rowuploaded++;
+    }
+
+    console.log('EXCEL DATA:', excelData);
+
+    return [excelData,
+    rowuploaded,
+    newfilename
+    ]
+}
+
+
+//   uploadBtn.addEventListener('click', () => {
+//     uploadBtn.disabled = true;
+//     uploadBtn.textContent = 'Uploading…';
+//     const files = files[0].file;
+//     const bars = {};
+//     fileList.querySelectorAll('.file-item.success').forEach((item, i) => {
+//       let bar = item.querySelector('.progress-bar');
+//       if (!bar) {
+//         bar = document.createElement('div');
+//         bar.className = 'progress-bar';
+//         bar.innerHTML = '<div class="progress-fill"></div>';
+//         item.querySelector('.file-info').appendChild(bar);
+//       }
+//       const fill = bar.querySelector('.progress-fill');
+//       let pct = 0;
+//       const delay = i * 180;
+//       setTimeout(() => {
+//         const iv = setInterval(() => {
+//           pct = Math.min(pct + Math.random() * 18, 100);
+//           fill.style.width = pct + '%';
+//           const data = await extractExcel(file);
+//           if (pct >= 100) {
+//             clearInterval(iv);
+//             fill.style.background = 'var(--success)';
+//           }
+//         }, 120);
+//       }, delay);
+//     });
+//     setTimeout(() => {
+//       uploadBtn.textContent = 'Upload files';
+//       uploadBtn.disabled = false;
+//     }, files.length * 200 + 1600);
+//   });
+
+
+
+
+
+
+const hrsEl = document.getElementById("hrs");
+const minEl = document.getElementById("min");
+const secEl = document.getElementById("sec");
+
+const dayEl = document.getElementById("day");
+const monthEl = document.getElementById("month");
+const yearEl = document.getElementById("year");
+
+const pad = (n) => String(n).padStart(2, "0");
+
+// set date once (static)
+const today = new Date();
+dayEl.textContent = pad(today.getDate());
+monthEl.textContent = pad(today.getMonth() + 1);
+yearEl.textContent = today.getFullYear();
+
+function updateClock() {
+    const now = new Date();
+
+    hrsEl.textContent = pad(now.getHours());
+    minEl.textContent = pad(now.getMinutes());
+    secEl.textContent = pad(now.getSeconds());
+}
+
+// initial render
+updateClock();
+
+// sync clock (better than drifting intervals)
+setInterval(updateClock, 1000);
+</script>
+
+    
+</body>
+</html>

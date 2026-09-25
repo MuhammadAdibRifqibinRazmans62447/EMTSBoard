@@ -1,0 +1,238 @@
+
+
+
+/* * Main card */ 
+.request-card {
+    background: #ffffff;
+}
+
+.card-header{
+    background-color: #777ebd;
+}
+
+.table-container {
+    max-height: 450px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+
+.table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+
+    background: #f1f5f9;
+    color: #334155;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    padding: 14px;
+}
+
+
+.table tbody td {
+    padding: 14px;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+
+.table tbody tr {
+    transition: 0.2s ease;
+}
+
+
+.table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+
+
+
+/* From Uiverse.io by NorthFishHasNa */ 
+.sp button {
+ display: inline-block;
+ border-radius: 4px;
+ background-color: #3d405b;
+ border: none;
+ color: #FFFFFF;
+ text-align: center;
+ font-size: 17px;
+ padding: 10px;
+ width: 130px;
+ transition: all 0.5s;
+ cursor: pointer;
+ margin: 5px;
+}
+
+button span {
+ cursor: pointer;
+ display: inline-block;
+ position: relative;
+ transition: 0.5s;
+}
+
+button span:after {
+ content: '+';
+ position: absolute;
+ opacity: 0;
+ top: 0;
+ right: -15px;
+ transition: 0.5s;
+}
+
+.sp button:hover span {
+ padding-right: 15px;
+}
+
+.sp button:hover span:after {
+ opacity: 1;
+ right: 0;
+}
+
+/* Table Button*/
+
+/* From Uiverse.io by gharsh11032000 */ 
+.tbBtn {
+  cursor: pointer;
+  position: relative;
+  font-size: 14px;
+  border-radius: 20px;
+  background-color: transparent;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+  overflow: hidden;
+
+}
+
+.editBtn {
+    color: rgb(193, 163, 98);
+    border-color: rgb(193, 163, 98);
+    
+}
+
+.switchbtn {
+    color:#000000;
+    border-color: #fbff00;
+}
+
+.deletebtn {
+    color:red;
+    border-color: red;
+}
+
+.editBtn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 50px;
+  height: 50px;
+  border-radius: inherit;
+  scale: 0;
+  z-index: -1;
+  background-color: rgb(193, 163, 98);
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.switchbtn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 50px;
+  height: 50px;
+  border-radius: inherit;
+  scale: 0;
+  z-index: -1;
+  background-color: #fbff00;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.deletebtn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 50px;
+  height: 50px;
+  border-radius: inherit;
+  scale: 0;
+  z-index: -1;
+  background-color: #eb1010;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.tbBtn:hover::before {
+  scale: 3;
+}
+
+.tbBtn:hover {
+  color: #212121;
+  scale: 1.1;
+  box-shadow: 0 0px 20px rgba(193, 163, 98,0.4);
+}
+
+.tbBtn:active {
+  scale: 1;
+}
+
+
+.dt-paging .dt-paging-button {
+    padding: 3px 8px !important;
+    font-size: 13px !important;
+    min-width: auto !important;
+}
+
+.dt-paging {
+    margin-top: 10px;
+}
+
+
+.input-group-password {
+    position: relative;
+}
+
+.input-group-password .form-control {
+    width: 100%;
+    padding-right: 45px;
+}
+
+/* Eye button */
+.input-group-password .toggle-password-btn {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+
+    width: 32px;
+    height: 32px;
+
+    padding: 0;
+    border: none;
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #6c757d;
+    cursor: pointer;
+}
+
+/* SVG */
+.input-group-password .toggle-password-btn svg {
+    width: 19px;
+    height: 19px;
+}
+
+/* Hover */
+.input-group-password .toggle-password-btn:hover {
+    color: #212529;
+}
+
+input[type="password"]::-ms-reveal {
+    display: none;
+}

@@ -1,0 +1,81 @@
+<div class="mainheader">
+
+    <div class="dashboard-title">
+        <a href="/E-mts/board/dashboard/admin">
+          
+                <h1>E-MTS BOARD</h1>
+        </a>
+        
+    </div>
+
+
+    <div class="section-title">
+
+        <div class="user-profile">
+
+            <div class="user-info">
+
+                <div class="welcome-text">
+                    Welcome, <%= user.name %>
+                </div>
+
+                <div class="user-detail">
+
+                    <span>
+                        <i class="fa-solid fa-building"></i>
+                        <%= user.dept %>
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-user-shield"></i>
+                        <%= user.rc %>
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="right-panel">
+
+        <div class="clock-group">
+                               <div class="clock">
+                        <span id="day">00</span> /
+                        <span id="month">00</span> /
+                        <span id="year">00</span>
+                    </div>
+
+                    <div class="clock">
+                        <span id="hrs">00</span> :
+                        <span id="min">00</span> :
+                        <span id="sec">00</span>
+                    </div>
+        </div>
+        <div class="collectionbtn">
+
+                            <% if (user.dept === 'Production') { %>
+                    <div class="upload">
+                        <a href="/E-mts/board/uploadExcell">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            Upload
+                        </a>
+                    </div>
+                <% } %>
+
+                <div class="logout">
+                    <a href="/E-mts/logout">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        Logout
+                    </a>
+                </div>
+
+        </div>
+
+    </div>
+
+
+</div>
